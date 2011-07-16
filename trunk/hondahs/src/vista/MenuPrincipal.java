@@ -19,7 +19,7 @@ public class MenuPrincipal extends JFrame {
 		this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		this.setResizable(false);
 		this.setLayout(null);
-		this.setSize(400, 300);
+		this.setSize(640, 480);
 		this.setLocationByPlatform(true);
 	}
 }
