@@ -1,24 +1,40 @@
 package modelo;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+
+@Entity
+@Table(name="usuario")
 public class Usuario {
 	
+	@Id
+	@GeneratedValue(strategy=GenerationType.AUTO)
+	@Column(name="numero")
 	private Integer numero;
 	
+	@Column(name="nombre",nullable=false)
 	private String nombre;
 	
+	@Column(name="legajo",nullable=false)
 	private Integer legajo;
 	
+	@Column(name="tipoUsuario")
 	private TipoUsuario tipoUsuario;
 	
+	@Column(name="clave",nullable=false)
 	private String clave;
 
 	public Usuario() {
 	}
 
-	public Usuario(Integer numero, String nombre, Integer legajo,
+	public Usuario(String nombre, Integer legajo,
 			TipoUsuario tipoUsuario, String clave) {
-		super();
-		this.numero = numero;
+		
 		this.nombre = nombre;
 		this.legajo = legajo;
 		this.tipoUsuario = tipoUsuario;
@@ -29,7 +45,9 @@ public class Usuario {
 		return numero;
 	}
 
-	public void setNumero(Integer numero) {
+	//Solo lo usa hibernate
+	@SuppressWarnings("unused")
+	private void setNumero(Integer numero) {
 		this.numero = numero;
 	}
 

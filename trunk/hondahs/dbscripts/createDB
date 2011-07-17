@@ -1,0 +1,102 @@
+CREATE SCHEMA `hondahs` ;
+
+CREATE TABLE `cliente` (
+  `numero` int(11) NOT NULL AUTO_INCREMENT,
+  `nombre` varchar(45) NOT NULL,
+  `email` varchar(45) NOT NULL,
+  `telefono` int(11) NOT NULL,
+  `celular` int(11) NOT NULL,
+  `direccion` varchar(45) NOT NULL,
+  PRIMARY KEY (`numero`)
+);
+
+CREATE TABLE `informe` (
+  `numero` int(11) NOT NULL AUTO_INCREMENT,
+  `informe` varchar(45) NOT NULL,
+  PRIMARY KEY (`numero`)
+);
+
+CREATE TABLE `pedidomateriales` (
+  `numero` int(11) NOT NULL AUTO_INCREMENT,
+  `idTarea` int(11) NOT NULL,
+  `estado` varchar(45) NOT NULL,
+  PRIMARY KEY (`numero`),
+  KEY `pedidoMaterialesTarea` (`idTarea`),
+  CONSTRAINT `pedidoMaterialesTarea` FOREIGN KEY (`idTarea`) 
+  REFERENCES `tarea` (`numero`) ON DELETE NO ACTION ON UPDATE NO ACTION
+);
+
+CREATE TABLE `itempedidomateriales` (
+  `numero` int(11) NOT NULL AUTO_INCREMENT,
+  `cantidad` int(11) NOT NULL,
+  `descripcion` varchar(45) NOT NULL,
+  `idPedidoMateriales` int(11) NOT NULL,
+  PRIMARY KEY (`numero`),
+  KEY `itemPedidoMaterialesFK` (`idPedidoMateriales`),
+  CONSTRAINT `itemPedidoMaterialesFK` FOREIGN KEY (`idPedidoMateriales`) 
+  REFERENCES `pedidomateriales` (`numero`) ON DELETE NO ACTION ON UPDATE NO ACTION
+);
+
+CREATE TABLE `ordentrabajo` (
+  `numero` int(11) NOT NULL AUTO_INCREMENT,
+  `idPresupuesto` int(11) NOT NULL,
+  `fechaInicio` varchar(45) NOT NULL,
+  `fechaFin` varchar(45) NOT NULL,
+  `estado` varchar(45) NOT NULL,
+  PRIMARY KEY (`numero`),
+  KEY `ordenTrabajoPresupuestoFK` (`idPresupuesto`),
+  CONSTRAINT `ordenTrabajoPresupuestoFK` FOREIGN KEY (`idPresupuesto`) 
+  REFERENCES `presupuesto` (`numero`) ON DELETE NO ACTION ON UPDATE NO ACTION
+);
+
+CREATE TABLE `vehiculo` (
+  `numero` int(11) NOT NULL AUTO_INCREMENT,
+  `patente` varchar(45) NOT NULL,
+  `modelo` varchar(45) NOT NULL,
+  `chasis` varchar(45) NOT NULL,
+  `kilometraje` int(11) NOT NULL,
+  `combustible` varchar(45) NOT NULL,
+  PRIMARY KEY (`numero`)
+)
+
+CREATE TABLE `presupuesto` (
+  `numero` int(11) NOT NULL AUTO_INCREMENT,
+  `fecha` varchar(45) NOT NULL,
+  `idCliente` int(11) NOT NULL,
+  `idVehiculo` int(11) NOT NULL,
+  PRIMARY KEY (`numero`),
+  KEY `presupuestoClienteFK` (`idCliente`),
+  KEY `presupuestoVehiculoFK` (`idVehiculo`),
+  CONSTRAINT `presupuestoClienteFK` FOREIGN KEY (`idCliente`) 
+  REFERENCES `cliente` (`numero`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `presupuestoVehiculoFK` FOREIGN KEY (`idVehiculo`) 
+  REFERENCES `vehiculo` (`numero`) ON DELETE NO ACTION ON UPDATE NO ACTION
+);
+
+
+
+CREATE TABLE `usuario` (
+  `numero` int(11) NOT NULL AUTO_INCREMENT,
+  `nombre` varchar(45) NOT NULL,
+  `legajo` int(11) NOT NULL,
+  `tipoUsuario` varchar(45) NOT NULL,
+  `clave` varchar(45) NOT NULL,
+  PRIMARY KEY (`numero`),
+  KEY `tipo_usuario` (`tipoUsuario`)
+)
+
+CREATE TABLE `tarea` (
+  `numero` int(11) NOT NULL AUTO_INCREMENT,
+  `tipoTarea` int(11) NOT NULL,
+  `estado` varchar(45) NOT NULL,
+  `fechaFin` varchar(45) NOT NULL,
+  `usuario` int(11) NOT NULL,
+  PRIMARY KEY (`numero`),
+  KEY `tipoTareaFK` (`tipoTarea`),
+  KEY `estadoTareaFK` (`estado`),
+  KEY `usuarioTareaFK` (`usuario`),
+  CONSTRAINT `tipoTareaFK` FOREIGN KEY (`tipoTarea`) 
+  REFERENCES `tipotarea` (`numero`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `usuarioTareaFK` FOREIGN KEY (`usuario`) 
+  REFERENCES `usuario` (`numero`) ON DELETE NO ACTION ON UPDATE NO ACTION
+)

@@ -8,46 +8,25 @@ package modelo;
  */
 public enum TipoUsuario {
 	
-	/**
-	 * Alinea el texto a izquierda.
-	 */
-	LEFT(1L, "Left"),
+	ADMINISTRATIVO("Administrativo"),
 
-	/**
-	 * Alinea el texto a derecha.
-	 */
-	RIGHT(2L, "Right");
+	JEFEDETALLER("Jefe de Taller"),
 
-	/**
-	 * Identificador de alineación de texto.
-	 */
-	private Long id;
+	DUENIO("Due\u00F1o"),
+	
+	OPERARIO("Operario");
+	
 
-	/**
-	 * Código de alineación de texto.
-	 */
 	private String code;
 
 	/**
 	 * Constructor del enumerador.
 	 * 
-	 * @param id Identificador de alineación de texto.
 	 * @param code Código de alineación de texto.
 	 */
-	private TipoUsuario(final Long id, final String code) {
+	private TipoUsuario(final String code) {
 
-		this.id = id;
 		this.code = code;
-	}
-
-	/**
-	 * Obtiene el identificador de alineación de texto.
-	 * 
-	 * @return Identificador de alineación de texto.
-	 */
-	public final Long getId() {
-
-		return (this.id);
 	}
 
 	/**
@@ -60,22 +39,6 @@ public enum TipoUsuario {
 		return (this.code);
 	}
 
-	/**
-	 * Obtiene el elemento correspondiente al identificador indicado.
-	 * 
-	 * @param id Identificador cuyo elemento obtener.
-	 * @return Elemento obtenido, o null si ninguno coincide con dicho identificador.
-	 */
-	public static TipoUsuario fromId(final Long id) {
-
-		for (TipoUsuario tipoItem : TipoUsuario.values()) {
-			if (tipoItem.getId().equals(id)) {
-				return (tipoItem);
-			}
-		}
-
-		return (null);
-	}
 
 	/**
 	 * Obtiene el elemento correspondiente al código indicado.

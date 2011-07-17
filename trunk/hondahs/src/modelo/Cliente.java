@@ -1,27 +1,43 @@
 package modelo;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+@Entity
+@Table(name="cliente")
 public class Cliente {
 	
+	@Id
+	@GeneratedValue(strategy=GenerationType.AUTO)
+	@Column(name="numero") 
 	private Integer numero;
 	
+	@Column(name="nombre",nullable=false) 
 	private String nombre;
 	
+	@Column(name="email",nullable=false)
 	private String email;
 	
+	@Column(name="telefono",nullable=false)
 	private Integer telefono;
 	
+	@Column(name="celular",nullable=false)
 	private Integer celular;
 	
+	@Column(name="direccion",nullable=false)
 	private String direccion;
 		
 	public Cliente() {
 		super();
 	}
 
-	public Cliente(Integer numero, String nombre, String email,
+	public Cliente(String nombre, String email,
 			Integer telefono, Integer celular, String direccion) {
-		super();
-		this.numero = numero;
+		
 		this.nombre = nombre;
 		this.email = email;
 		this.telefono = telefono;
@@ -33,7 +49,9 @@ public class Cliente {
 		return numero;
 	}
 
-	public void setNumero(Integer numero) {
+	//Solo lo usa hibernate
+	@SuppressWarnings("unused")
+	private void setNumero(Integer numero) {
 		this.numero = numero;
 	}
 
