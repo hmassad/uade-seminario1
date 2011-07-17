@@ -1,24 +1,44 @@
 package modelo;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
+
+@Entity
+@Table(name="tarea")
 public class Tarea {
 
+	@Id
+	@GeneratedValue(strategy=GenerationType.AUTO)
+	@Column(name="numero")
 	private Integer numero;
 	
+	@OneToOne
+	@JoinColumn(name="numero")
 	private TipoTarea tipoTarea;
 	
+	@OneToOne
+	@JoinColumn(name="numero")
 	private TipoTarea estado;
 	
+	@Column(name="fechaFin",nullable=false)
 	private String fechaFin;
 	
+	@OneToOne
+	@JoinColumn(name="numero")
 	private Usuario usuario;
 
 	public Tarea() {
 	}
 
-	public Tarea(Integer numero, TipoTarea tipoTarea, TipoTarea estado,
+	public Tarea(TipoTarea tipoTarea, TipoTarea estado,
 			String fechaFin, Usuario usuario) {
 		
-		this.numero = numero;
 		this.tipoTarea = tipoTarea;
 		this.estado = estado;
 		this.fechaFin = fechaFin;
@@ -29,7 +49,9 @@ public class Tarea {
 		return numero;
 	}
 
-	public void setNumero(Integer numero) {
+	//Solo lo usa hibernate
+	@SuppressWarnings("unused")
+	private void setNumero(Integer numero) {
 		this.numero = numero;
 	}
 

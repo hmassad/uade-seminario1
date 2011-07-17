@@ -7,7 +7,7 @@
 		 
 	 <!-- Database connection settings -->
 		<property name="connection.driver_class">com.mysql.jdbc.Driver</property>
-		<property name="connection.url">jdbc:mysql://localhost/tpo_lenguajesvisuales</property>
+		<property name="connection.url">jdbc:mysql://localhost/hondahs</property>
 		<property name="connection.username">root</property>
 		<property name="connection.password">root</property>
 
@@ -37,9 +37,9 @@
 	<mapping  class="modelo.Informe"/>
 	<mapping  class="modelo.ItemPedidoMateriales"/>
 	<mapping  class="modelo.OrdenTrabajo"/>
+	<mapping  class="modelo.Tarea"/>
 	<mapping  class="modelo.PedidoMateriales"/>
 	<mapping  class="modelo.Presupuesto"/>
-	<mapping  class="modelo.Tarea"/>
 	<mapping  class="modelo.TipoTarea"/>
 	<mapping  class="modelo.Usuario"/>
 	<mapping  class="modelo.Vehiculo"/>

@@ -1,22 +1,40 @@
 package modelo;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
+
+@Entity
+@Table(name="pedidoMateriales")
 public class Presupuesto {
 	
+	@Id
+	@GeneratedValue(strategy=GenerationType.AUTO)
+	@Column(name="numero")
 	private Integer numero;
 	
+	@Column(name="fecha",nullable=false)
 	private String fecha;
 	
+	@OneToOne
+	@JoinColumn(name="numero")
 	private Cliente cliente;
 	
+	@OneToOne
+	@JoinColumn(name="numero")
 	private Vehiculo vehiculo;
 
 	public Presupuesto() {
 	}
 
-	public Presupuesto(Integer numero, String fecha, Cliente cliente,
+	public Presupuesto(String fecha, Cliente cliente,
 			Vehiculo vehiculo) {
 	
-		this.numero = numero;
 		this.fecha = fecha;
 		this.cliente = cliente;
 		this.vehiculo = vehiculo;
@@ -26,7 +44,9 @@ public class Presupuesto {
 		return numero;
 	}
 
-	public void setNumero(Integer numero) {
+	//Solo lo usa hibernate
+	@SuppressWarnings("unused")
+	private void setNumero(Integer numero) {
 		this.numero = numero;
 	}
 

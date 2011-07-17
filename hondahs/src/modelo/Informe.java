@@ -1,17 +1,28 @@
 package modelo;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+@Entity
+@Table(name="informe")
 public class Informe {
 	
+	@Id
+	@GeneratedValue(strategy=GenerationType.AUTO)
+	@Column(name="numero")
 	private Integer numero;
 	
+	@Column(name="tipoInforme",nullable=false)
 	private String tipoInforme;
 
 	public Informe() {
 	}
 
-	public Informe(Integer numero, String tipoInforme) {
-		super();
-		this.numero = numero;
+	public Informe(String tipoInforme) {
 		this.tipoInforme = tipoInforme;
 	}
 
@@ -19,7 +30,9 @@ public class Informe {
 		return numero;
 	}
 
-	public void setNumero(Integer numero) {
+	//Solo lo usa hibernate
+	@SuppressWarnings("unused")
+	private void setNumero(Integer numero) {
 		this.numero = numero;
 	}
 

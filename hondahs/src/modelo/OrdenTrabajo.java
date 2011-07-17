@@ -3,29 +3,50 @@ package modelo;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
+
+@Entity
+@Table(name="ordenTrabajo")
 public class OrdenTrabajo {
 	
+	@Id
+	@GeneratedValue(strategy=GenerationType.AUTO)
+	@Column(name="numero")
 	private Integer numero;
 	
+	@OneToOne
+    @JoinColumn(name="numero")
 	private Presupuesto presupuesto;
-	
+    
+    @Column(name="fechaInicio",nullable=false)
 	private String fechaInicio;
 	
+    @Column(name="fechaFin",nullable=false)
 	private String fechaFin;
 	
+    @Column(name="estado",nullable=false)
 	private String estado;
 	
+    @OneToMany
+    @JoinColumn(name="numero")
 	private List<Tarea> listaTareas;
 
 	public OrdenTrabajo() {
 		this.listaTareas = new ArrayList<Tarea>(); 
 	}
 
-	public OrdenTrabajo(Integer numero, Presupuesto presupuesto,
+	public OrdenTrabajo(Presupuesto presupuesto,
 			String fechaInicio, String fechaFin, String estado,
 			List<Tarea> listaTareas) {
 		
-		this.numero = numero;
 		this.presupuesto = presupuesto;
 		this.fechaInicio = fechaInicio;
 		this.fechaFin = fechaFin;
@@ -37,7 +58,9 @@ public class OrdenTrabajo {
 		return numero;
 	}
 
-	public void setNumero(Integer numero) {
+	//Solo lo usa hibernate
+	@SuppressWarnings("unused")
+	private void setNumero(Integer numero) {
 		this.numero = numero;
 	}
 
