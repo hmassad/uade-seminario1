@@ -48,27 +48,26 @@ public class LoginFrame extends JFrame {
 	private void initGUI() {
 		this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		this.setResizable(false);
-		this.setSize(400,200);
+		this.setSize(400, 200);
 		this.setLocationByPlatform(true);
 		getContentPane().setLayout(
 				new FormLayout(new ColumnSpec[] {
-				FormFactory.UNRELATED_GAP_COLSPEC,
-				FormFactory.MIN_COLSPEC,
-				FormFactory.RELATED_GAP_COLSPEC,
-				ColumnSpec.decode("max(137dlu;default)"),
-				FormFactory.LABEL_COMPONENT_GAP_COLSPEC,},
-			new RowSpec[] {
-				FormFactory.UNRELATED_GAP_ROWSPEC,
-				RowSpec.decode("max(20dlu;default)"),
-				FormFactory.RELATED_GAP_ROWSPEC,
-				FormFactory.DEFAULT_ROWSPEC,
-				FormFactory.RELATED_GAP_ROWSPEC,
-				FormFactory.DEFAULT_ROWSPEC,
-				FormFactory.RELATED_GAP_ROWSPEC,
-				FormFactory.DEFAULT_ROWSPEC,
-				FormFactory.RELATED_GAP_ROWSPEC,
-				FormFactory.DEFAULT_ROWSPEC,
-				FormFactory.RELATED_GAP_ROWSPEC,}));
+						FormFactory.UNRELATED_GAP_COLSPEC,
+						FormFactory.MIN_COLSPEC,
+						FormFactory.RELATED_GAP_COLSPEC,
+						ColumnSpec.decode("max(137dlu;default)"),
+						FormFactory.LABEL_COMPONENT_GAP_COLSPEC, },
+						new RowSpec[] { FormFactory.UNRELATED_GAP_ROWSPEC,
+								RowSpec.decode("max(20dlu;default)"),
+								FormFactory.RELATED_GAP_ROWSPEC,
+								FormFactory.DEFAULT_ROWSPEC,
+								FormFactory.RELATED_GAP_ROWSPEC,
+								FormFactory.DEFAULT_ROWSPEC,
+								FormFactory.RELATED_GAP_ROWSPEC,
+								FormFactory.DEFAULT_ROWSPEC,
+								FormFactory.RELATED_GAP_ROWSPEC,
+								FormFactory.DEFAULT_ROWSPEC,
+								FormFactory.RELATED_GAP_ROWSPEC, }));
 
 		tituloLabel = new JLabel();
 		tituloLabel.setHorizontalAlignment(SwingConstants.CENTER);
@@ -87,7 +86,7 @@ public class LoginFrame extends JFrame {
 
 		passwordLabel = new JLabel();
 		this.getContentPane().add(passwordLabel, "2, 6, fill, fill");
-		passwordLabel.setText("Contraseña");
+		passwordLabel.setText("Contraseï¿½a");
 
 		passwordTextField = new JPasswordField();
 		passwordLabel.setLabelFor(passwordTextField);
@@ -98,20 +97,26 @@ public class LoginFrame extends JFrame {
 		perfilLabel.setText("Perfil");
 
 		perfilComboBox = new JComboBox();
-		perfilComboBox.setModel(new DefaultComboBoxModel(new String[] { TipoUsuario.ADMINISTRATIVO.getCode(), 
-																		TipoUsuario.JEFEDETALLER.getCode(), 
-																		TipoUsuario.DUENIO.getCode(), 
-																		TipoUsuario.OPERARIO.getCode(), }));
+		perfilComboBox
+				.setModel(new DefaultComboBoxModel(new String[] {
+						TipoUsuario.ADMINISTRATIVO.getCode(),
+						TipoUsuario.JEFEDETALLER.getCode(),
+						TipoUsuario.DUENIO.getCode(),
+						TipoUsuario.OPERARIO.getCode(), }));
 		perfilLabel.setLabelFor(perfilComboBox);
 		this.getContentPane().add(perfilComboBox, "4, 8, fill, fill");
 
 		loginButton = new JButton();
 		loginButton.addActionListener(new ActionListener() {
+			@SuppressWarnings("deprecation")
 			public void actionPerformed(ActionEvent arg0) {
-				if(Sistema.getInstancia().validarLogin(usuarioTextField.getText(), passwordTextField.getText(), perfilComboBox.getSelectedItem().toString())){
-				
-				}else{
-					
+				if (Sistema.getInstancia().validarLogin(
+						usuarioTextField.getText(),
+						passwordTextField.getText(),
+						perfilComboBox.getSelectedItem().toString())) {
+
+				} else {
+
 				}
 			}
 		});
