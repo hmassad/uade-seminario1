@@ -1,11 +1,12 @@
 package vista;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
-import javax.swing.JFrame;
+import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTable;
@@ -13,26 +14,41 @@ import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableModel;
 
+import modelo.Presupuesto;
+
 import com.jgoodies.forms.factories.FormFactory;
 import com.jgoodies.forms.layout.ColumnSpec;
 import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.RowSpec;
 
-public class BuscarPresupuestoFrame extends JFrame {
+public class BuscarPresupuestoDialog extends JDialog {
 
 	private static final long serialVersionUID = 1L;
+
+	private IPresupuestoPerformer presupuestoPerformer;
+
 	private JTable presupuestosTable;
 	private JTextField fechaInicioTextField;
 	private JTextField textField;
 
-	public BuscarPresupuestoFrame() {
+	public BuscarPresupuestoDialog() {
+		setName("buscarPresupuestoDialog");
+		setModal(true);
+		setSize(new Dimension(400, 300));
+		setPreferredSize(new Dimension(400, 300));
+		setTitle("Buscar Presupuesto");
 
 		JPanel filtrosPanel = new JPanel();
 		getContentPane().add(filtrosPanel, BorderLayout.NORTH);
-		filtrosPanel.setLayout(new FormLayout(new ColumnSpec[] { FormFactory.UNRELATED_GAP_COLSPEC, FormFactory.DEFAULT_COLSPEC,
-				FormFactory.LABEL_COMPONENT_GAP_COLSPEC, ColumnSpec.decode("max(89dlu;default):grow"), FormFactory.RELATED_GAP_COLSPEC,
-				FormFactory.BUTTON_COLSPEC, FormFactory.RELATED_GAP_COLSPEC, FormFactory.BUTTON_COLSPEC, FormFactory.UNRELATED_GAP_COLSPEC, }, new RowSpec[] {
-				FormFactory.UNRELATED_GAP_ROWSPEC, FormFactory.DEFAULT_ROWSPEC, FormFactory.UNRELATED_GAP_ROWSPEC, FormFactory.DEFAULT_ROWSPEC,
+		filtrosPanel.setLayout(new FormLayout(new ColumnSpec[] {
+				FormFactory.UNRELATED_GAP_COLSPEC, FormFactory.DEFAULT_COLSPEC,
+				FormFactory.LABEL_COMPONENT_GAP_COLSPEC,
+				ColumnSpec.decode("max(89dlu;default):grow"),
+				FormFactory.RELATED_GAP_COLSPEC, FormFactory.BUTTON_COLSPEC,
+				FormFactory.RELATED_GAP_COLSPEC, FormFactory.BUTTON_COLSPEC,
+				FormFactory.UNRELATED_GAP_COLSPEC, }, new RowSpec[] {
+				FormFactory.UNRELATED_GAP_ROWSPEC, FormFactory.DEFAULT_ROWSPEC,
+				FormFactory.UNRELATED_GAP_ROWSPEC, FormFactory.DEFAULT_ROWSPEC,
 				FormFactory.UNRELATED_GAP_ROWSPEC, }));
 
 		JLabel fechaInicioLabel = new JLabel("Fecha Inicio");
@@ -42,7 +58,7 @@ public class BuscarPresupuestoFrame extends JFrame {
 		filtrosPanel.add(fechaInicioTextField, "4, 2, fill, default");
 		fechaInicioTextField.setColumns(10);
 
-		JButton fechaInicioHoyButton = new JButton("hoy");
+		JButton fechaInicioHoyButton = new JButton("Hoy");
 		filtrosPanel.add(fechaInicioHoyButton, "6, 2");
 
 		JButton btnBuscar = new JButton("Buscar");
@@ -66,26 +82,24 @@ public class BuscarPresupuestoFrame extends JFrame {
 		presupuestosTable.setDoubleBuffered(true);
 		presupuestosTable.setFillsViewportHeight(true);
 		presupuestosTable.setModel(new DefaultTableModel(new Object[][] {
-				{ null, null, null, null },
-				{ null, null, null, null },
-				{ null, null, null, null },
-				{ null, null, null, null },
-				{ null, null, null, null },
-				{ null, null, null, null },
-				{ null, null, null, null },
-		}, new String[] {
-				"N\u00FAmero", "Cliente", "Veh\u00EDculo", "Fecha" }) {
+				{ null, null, null, null }, { null, null, null, null },
+				{ null, null, null, null }, { null, null, null, null },
+				{ null, null, null, null }, { null, null, null, null },
+				{ null, null, null, null }, }, new String[] { "N\u00FAmero",
+				"Cliente", "Veh\u00EDculo", "Fecha" }) {
 			private static final long serialVersionUID = 1L;
 
 			@SuppressWarnings("rawtypes")
-			Class[] columnTypes = new Class[] { Integer.class, String.class, String.class, Object.class };
+			Class[] columnTypes = new Class[] { Integer.class, String.class,
+					String.class, Object.class };
 
 			@SuppressWarnings({ "unchecked", "rawtypes" })
 			public Class getColumnClass(int columnIndex) {
 				return columnTypes[columnIndex];
 			}
 
-			boolean[] columnEditables = new boolean[] { true, false, false, false };
+			boolean[] columnEditables = new boolean[] { true, false, false,
+					false };
 
 			public boolean isCellEditable(int row, int column) {
 				return columnEditables[column];
@@ -102,14 +116,33 @@ public class BuscarPresupuestoFrame extends JFrame {
 		getContentPane().add(botonesPanel, BorderLayout.SOUTH);
 
 		JButton cancelarButton = new JButton("Cancelar");
+		cancelarButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				BuscarPresupuestoDialog.this.dispose();
+			}
+		});
 		botonesPanel.add(cancelarButton);
 
 		JButton aceptarButton = new JButton("Aceptar");
 		aceptarButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
+				if (presupuestoPerformer != null) {
+					// TODO: Obtener el presupuesto seleccionado
+					Presupuesto presupuesto = null;
+					presupuestoPerformer.setPresupuesto(presupuesto);
+				}
+				BuscarPresupuestoDialog.this.dispose();
 			}
 		});
 		botonesPanel.add(aceptarButton);
 	}
 
+	public void setPresupuestoPerformer(
+			IPresupuestoPerformer presupuestoPerformer) {
+		this.presupuestoPerformer = presupuestoPerformer;
+	}
+
+	public IPresupuestoPerformer getPresupuestoPerformer() {
+		return this.presupuestoPerformer;
+	}
 }

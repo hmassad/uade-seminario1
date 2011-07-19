@@ -1,5 +1,6 @@
 package vista;
 
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -7,10 +8,14 @@ import java.awt.event.ActionListener;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
-import javax.swing.JFrame;
+import javax.swing.JDialog;
 import javax.swing.JLabel;
+import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+
+import modelo.TipoUsuario;
+import modelo.Usuario;
 
 import com.jgoodies.forms.factories.FormFactory;
 import com.jgoodies.forms.layout.ColumnSpec;
@@ -18,18 +23,10 @@ import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.RowSpec;
 
 import controlador.Sistema;
-import javax.swing.JPasswordField;
 
-import modelo.TipoUsuario;
+public class LoginDialog extends JDialog {
 
-public class LoginFrame extends JFrame {
-
-	private static final long serialVersionUID = -4787716725567842031L;
-
-	public static void main(String[] args) {
-		LoginFrame loginFrame = new LoginFrame();
-		loginFrame.setVisible(true);
-	}
+	private static final long serialVersionUID = 1L;
 
 	private JLabel tituloLabel;
 	private JLabel usuarioLabel;
@@ -39,19 +36,18 @@ public class LoginFrame extends JFrame {
 	private JLabel perfilLabel;
 	private JComboBox perfilComboBox;
 	private JButton loginButton;
-	private LoginFrame instancia;
-	
-	public LoginFrame() {
-		setTitle("Sistema de Administraci\u00F3n de \u00D3rdenes de Trabajo para Honda HS");
-		this.instancia = this;
-		initGUI();
-	}
 
-	private void initGUI() {
-		this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-		this.setResizable(false);
-		this.setSize(300, 200);
-		this.setLocationByPlatform(true);
+	private ILoginPerformer loginPerformer;
+
+	public LoginDialog() {
+		setName("loginDialog");
+		setModal(true);
+		setSize(new Dimension(300, 200));
+		setPreferredSize(new Dimension(300, 200));
+		setTitle("Sistema de Administraci\u00F3n de \u00D3rdenes de Trabajo para Honda HS");
+		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+		setResizable(false);
+		setLocationByPlatform(false);
 		getContentPane().setLayout(
 				new FormLayout(new ColumnSpec[] {
 						FormFactory.UNRELATED_GAP_COLSPEC,
@@ -112,22 +108,26 @@ public class LoginFrame extends JFrame {
 		loginButton.addActionListener(new ActionListener() {
 			@SuppressWarnings("deprecation")
 			public void actionPerformed(ActionEvent arg0) {
-				if(Sistema.getInstancia().validarLogin(usuarioTextField.getText(), passwordTextField.getText(), 
-						perfilComboBox.getSelectedItem().toString())){
-					
-					
-					MenuPrincipal app = new MenuPrincipal();
-					app.setVisible(true);
-					app.setLocationRelativeTo(null);
-					
-					instancia.setVisible(false);
-					
-				}else{
-					
+				Usuario usuario = Sistema.getInstancia().getUsuario(
+						usuarioTextField.getText(),
+						passwordTextField.getText(),
+						perfilComboBox.getSelectedItem().toString());
+
+				if (LoginDialog.this.loginPerformer != null) {
+					LoginDialog.this.loginPerformer.setUsuario(usuario);
+					LoginDialog.this.dispose();
 				}
 			}
 		});
 		this.getContentPane().add(loginButton, "4, 10, fill, fill");
 		loginButton.setText("Ingresar");
+	}
+
+	public void setLoginPerformer(ILoginPerformer loginPerformer) {
+		this.loginPerformer = loginPerformer;
+	}
+
+	public ILoginPerformer getLoginPerformer() {
+		return this.loginPerformer;
 	}
 }
