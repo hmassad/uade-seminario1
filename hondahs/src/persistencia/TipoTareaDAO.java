@@ -123,6 +123,39 @@ public class TipoTareaDAO {
 			return null;
 		}
 	}
+	
+	@SuppressWarnings("unchecked")
+	public TipoTarea select(String descripcion) throws RuntimeException {
+		
+		Transaction tx = null;
+		Session session = SessionFactoryUtil.getInstance().getCurrentSession();
+		List<TipoTarea> tipoTareas = new ArrayList<TipoTarea>();
+		try {
+			
+			tx = session.beginTransaction();
+			tipoTareas = session.createCriteria(TipoTarea.class)
+		    .add( Restrictions.eq("descripcion",descripcion) )
+		    .list();
+			
+			tx.commit();
+		} catch (RuntimeException e) {
+			if (tx != null && tx.isActive()) {
+				try {
+					// Second try catch as the rollback could fail as well
+					tx.rollback();
+				} catch (HibernateException e1) {
+					logger.debug("Error rolling back transaction");
+				}
+				throw new RuntimeException("Error: Imposible seleccionar el TipoTarea.\n" +
+						"detalles del error[ "+e.getMessage()+"]");
+			}
+		}	
+		if(tipoTareas.size()>0){
+			return tipoTareas.get(0);
+		}else{
+			return null;
+		}
+	}
 
 	@SuppressWarnings("unchecked")
 	public List<TipoTarea> selectAll() throws RuntimeException {
@@ -150,5 +183,6 @@ public class TipoTareaDAO {
 		}	
 		return tipotareas;
 	}
-
+	
+	
 }
