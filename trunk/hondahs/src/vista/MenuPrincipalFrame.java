@@ -6,6 +6,7 @@ import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 
 import modelo.Usuario;
 
@@ -18,8 +19,8 @@ public class MenuPrincipalFrame extends JFrame implements ILoginPerformer {
 
 	private static final long serialVersionUID = 1L;
 
-	public static void main(String[] args) {
-		try {
+	public static void main(String[] args) throws ClassNotFoundException, InstantiationException, IllegalAccessException, UnsupportedLookAndFeelException {
+		UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 			MenuPrincipalFrame mp = new MenuPrincipalFrame();
 			// int i = 0;
 			// while (mp.getUsuario() == null && i < 3) {
@@ -31,15 +32,11 @@ public class MenuPrincipalFrame extends JFrame implements ILoginPerformer {
 			// if (i >= 3)
 			// return;
 			mp.setVisible(true);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
 	}
 
 	private Usuario usuario;
 
-	public MenuPrincipalFrame() throws Exception {
-		UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+	public MenuPrincipalFrame() {
 		setResizable(false);
 		setTitle("Honda HS: Men\u00FA Principal");
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
