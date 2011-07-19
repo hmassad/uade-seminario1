@@ -123,6 +123,44 @@ public class PresupuestoDAO {
 			return null;
 		}
 	}
+	
+	@SuppressWarnings("unchecked")
+	public List<Presupuesto> selectAllByDates(String fechaInicio,String fechaFin) throws RuntimeException {
+		
+		Transaction tx = null;
+		Session session = SessionFactoryUtil.getInstance().getCurrentSession();
+		List<Presupuesto> presupuestos = new ArrayList<Presupuesto>();
+		try {
+			
+			List<String> fechas = new ArrayList<String>();
+			fechas.add(fechaInicio);
+			fechas.add(fechaFin);
+			
+			tx = session.beginTransaction();
+			presupuestos = session.createCriteria(Presupuesto.class)
+		    .add( Restrictions.in("fecha", fechas))
+		    .list();
+			tx.commit();
+			
+		} catch (RuntimeException e) {
+			if (tx != null && tx.isActive()) {
+				try {
+					// Second try catch as the rollback could fail as well
+					tx.rollback();
+				} catch (HibernateException e1) {
+					logger.debug("Error rolling back transaction");
+				}
+				throw new RuntimeException("Error: Imposible seleccionar lo presupuestos.\n" +
+						"detalles del error[ "+e.getMessage()+"]");
+			}
+		}	
+		
+		if(presupuestos.size()>0){
+			return presupuestos;
+		}else{
+			return null;
+		}
+	}
 
 	@SuppressWarnings("unchecked")
 	public List<Presupuesto> selectAll() throws RuntimeException {
