@@ -1,7 +1,52 @@
 
+/* insert de usuario */
 insert into hondahs.usuario(nombre,legajo,tipoUsuario,clave) values ("Pablo Lamas",1,"ADMINISTRATIVO","1234");
 insert into hondahs.usuario(nombre,legajo,tipoUsuario,clave) values ("Oscar Lamas",2,"JEFEDETALLER","1234");
 insert into hondahs.usuario(nombre,legajo,tipoUsuario,clave) values ("Hernan Massad",3,"DUENIO","1234");
 insert into hondahs.usuario(nombre,legajo,tipoUsuario,clave) values ("Ezequiel Manfredi",4,"OPERARIO","1234");
 
+/* insert de clientes */
+insert into hondahs.cliente(nombre,email,telefono,celular,direccion) values ('Braulio Aguirre','baguirre@gmail.com',42963601,1523456701,'Lavalle 145');
+insert into hondahs.cliente(nombre,email,telefono,celular,direccion) values ('Fernando Lencina','flencina@gmail.com',42963602,1523456702,'Fernando de toro 265');
+insert into hondahs.cliente(nombre,email,telefono,celular,direccion) values ('Juan Manuel Fregotte','jmfregotte@gmail.com',42963603,1523456703,'Pelegrini 555');
+insert into hondahs.cliente(nombre,email,telefono,celular,direccion) values ('Agustin Fregotte','afregotte@gmail.com',42963604,1523456704,'Pelegrini 555');
+insert into hondahs.cliente(nombre,email,telefono,celular,direccion) values ('Rodrigo Lencina','rlencina@gmail.com',42963605,1523456705,'Fernando de toro 265');
+insert into hondahs.cliente(nombre,email,telefono,celular,direccion) values ('Lucas Gattari','lgattari@gmail.com',42963606,1523456706,'Mariano Acosta 206');
+insert into hondahs.cliente(nombre,email,telefono,celular,direccion) values ('Sebastian Perazzo','sperazzo@gmail.com',42963607,1523456707,'Rojas 1025');
+insert into hondahs.cliente(nombre,email,telefono,celular,direccion) values ('Lucas Damonte','ldamonte@gmail.com',42963608,1523456708,'Vicente Lopez 951');
+insert into hondahs.cliente(nombre,email,telefono,celular,direccion) values ('Oscar San Pedro','osanpedro@gmail.com',42963609,1523456709,'Dardo Rocha 546');
+insert into hondahs.cliente(nombre,email,telefono,celular,direccion) values ('Sabrina Buatti','sbuatti@gmail.com',42963610,1523456710,'Alem 122');
 
+/* insert de vehiculos */
+insert into hondahs.vehiculo(patente,modelo,chasis,kilometraje,combustible) values ("ABC 843","Accord","12345671",450,"nafta");
+insert into hondahs.vehiculo(patente,modelo,chasis,kilometraje,combustible) values ("DEF 987","Civic","12345672",2500,"nafta");
+insert into hondahs.vehiculo(patente,modelo,chasis,kilometraje,combustible) values ("GHI 357","Beat","12345673",25000,"nafta");
+insert into hondahs.vehiculo(patente,modelo,chasis,kilometraje,combustible) values ("JKL 753","Fit","12345674",98000,"nafta");
+insert into hondahs.vehiculo(patente,modelo,chasis,kilometraje,combustible) values ("MNR 157","Pilot","12345675",250630,"nafta");
+insert into hondahs.vehiculo(patente,modelo,chasis,kilometraje,combustible) values ("STU 159","Civic","12345676",1050,"nafta");
+insert into hondahs.vehiculo(patente,modelo,chasis,kilometraje,combustible) values ("XYZ 741","Pilot","12345677",45621,"gasoil");
+insert into hondahs.vehiculo(patente,modelo,chasis,kilometraje,combustible) values ("AGH 966","Pilot","12345678",987156,"gasoil");
+insert into hondahs.vehiculo(patente,modelo,chasis,kilometraje,combustible) values ("OAN 651","Accord","12345679",1024893,"gasoil");
+insert into hondahs.vehiculo(patente,modelo,chasis,kilometraje,combustible) values ("QUI 745","Fit","12345610",102456985,"gasoil");
+insert into hondahs.vehiculo(patente,modelo,chasis,kilometraje,combustible) values ("BNA 821","Civic","12345611",260174991,"gasoil");
+insert into hondahs.vehiculo(patente,modelo,chasis,kilometraje,combustible) values ("PRN 789","Fit","12345612",201456988,"gasoil");
+insert into hondahs.vehiculo(patente,modelo,chasis,kilometraje,combustible) values ("RNA 145","Civic","12345613",189321456,"gasoil");
+insert into hondahs.vehiculo(patente,modelo,chasis,kilometraje,combustible) values ("UAB 951","Beat","12345614",146987421,"gasoil");
+insert into hondahs.vehiculo(patente,modelo,chasis,kilometraje,combustible) values ("QNN 145","Accord","12345615",136985655,"gasoil");
+
+/* insert de presupuesto */
+insert into hondahs.presupuesto(fecha,idCliente,idVehiculo) values ("11/02/2011",1,1);
+insert into hondahs.presupuesto(fecha,idCliente,idVehiculo) values ("11/02/2011",2,2);
+insert into hondahs.presupuesto(fecha,idCliente,idVehiculo) values ("12/02/2011",3,3);
+insert into hondahs.presupuesto(fecha,idCliente,idVehiculo) values ("12/02/2011",4,4);
+insert into hondahs.presupuesto(fecha,idCliente,idVehiculo) values ("12/02/2011",5,5);
+insert into hondahs.presupuesto(fecha,idCliente,idVehiculo) values ("13/02/2011",6,6);
+insert into hondahs.presupuesto(fecha,idCliente,idVehiculo) values ("13/02/2011",7,7);
+insert into hondahs.presupuesto(fecha,idCliente,idVehiculo) values ("14/02/2011",8,8);
+insert into hondahs.presupuesto(fecha,idCliente,idVehiculo) values ("15/02/2011",9,9);
+insert into hondahs.presupuesto(fecha,idCliente,idVehiculo) values ("15/02/2011",10,10);
+insert into hondahs.presupuesto(fecha,idCliente,idVehiculo) values ("15/02/2011",1,11);
+insert into hondahs.presupuesto(fecha,idCliente,idVehiculo) values ("15/02/2011",2,12);
+insert into hondahs.presupuesto(fecha,idCliente,idVehiculo) values ("16/02/2011",3,13);
+insert into hondahs.presupuesto(fecha,idCliente,idVehiculo) values ("16/02/2011",4,14);
+insert into hondahs.presupuesto(fecha,idCliente,idVehiculo) values ("16/02/2011",5,15);
