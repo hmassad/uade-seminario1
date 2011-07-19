@@ -167,11 +167,11 @@ public class PresupuestoDAO {
 
 		Transaction tx = null;
 		Session session = SessionFactoryUtil.getInstance().getCurrentSession();
-		List<Presupuesto> pedidos = new ArrayList<Presupuesto>();
+		List<Presupuesto> presupuestos = new ArrayList<Presupuesto>();
 		try {
 			
 			tx = session.beginTransaction();
-			pedidos = session.createCriteria(Presupuesto.class).list();
+			presupuestos = session.createCriteria(Presupuesto.class).list();
 			tx.commit();
 			
 		} catch (RuntimeException e) {
@@ -186,6 +186,6 @@ public class PresupuestoDAO {
 						"detalles del error[ "+e.getMessage()+"]");
 			}
 		}	
-		return pedidos;
+		return presupuestos;
 	}
 }
