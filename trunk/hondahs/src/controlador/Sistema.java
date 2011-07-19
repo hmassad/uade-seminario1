@@ -1,6 +1,8 @@
 package controlador;
 
+import persistencia.UsuarioDAO;
 import modelo.Cliente;
+import modelo.Usuario;
 
 public class Sistema {
 
@@ -22,7 +24,16 @@ public class Sistema {
 	}
 
 	public boolean validarLogin(String usuario, String password, String perfil) {
-		// TODO Auto-generated method stub
-		return true;
+		//busco al usuario con el nombre y password
+		Usuario usr = UsuarioDAO.getInstancia().select(usuario,password);
+		if(usr!=null){
+			if(usr.getTipoUsuario().getCode().equals(perfil)){
+				return true;
+			}else{
+				return false;
+			}		
+		}else{
+			return false;
+		}
 	}
 }
