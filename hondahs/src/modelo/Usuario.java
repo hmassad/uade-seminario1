@@ -2,6 +2,8 @@ package modelo;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -23,7 +25,8 @@ public class Usuario {
 	@Column(name="legajo",nullable=false)
 	private Integer legajo;
 	
-	@Column(name="tipoUsuario")
+	@Enumerated(EnumType.STRING) 
+	@Column(name="tipoUsuario", nullable = false)
 	private TipoUsuario tipoUsuario;
 	
 	@Column(name="clave",nullable=false)

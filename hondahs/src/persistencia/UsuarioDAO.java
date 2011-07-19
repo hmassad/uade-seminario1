@@ -123,6 +123,41 @@ public class UsuarioDAO {
 			return null;
 		}
 	}
+	
+	@SuppressWarnings("unchecked")
+	public Usuario select(String nombre, String password) throws RuntimeException {
+		
+		Transaction tx = null;
+		Session session = SessionFactoryUtil.getInstance().getCurrentSession();
+		List<Usuario> usuarios = new ArrayList<Usuario>();
+		try {
+			
+			tx = session.beginTransaction();
+			usuarios = session.createCriteria(Usuario.class)
+		    .add( Restrictions.eq("nombre",nombre))
+		    .add( Restrictions.eq("clave",password))
+		    .list();
+			
+			tx.commit();
+		} catch (RuntimeException e) {
+			if (tx != null && tx.isActive()) {
+				try {
+					// Second try catch as the rollback could fail as well
+					tx.rollback();
+				} catch (HibernateException e1) {
+					logger.debug("Error rolling back transaction");
+				}
+				throw new RuntimeException("Error: Imposible seleccionar el usuario.\n" +
+						"detalles del error[ "+e.getMessage()+"]");
+			}
+		}	
+		
+		if(usuarios.size()>0){
+			return usuarios.get(0);
+		}else{
+			return null;
+		}
+	}
 
 	@SuppressWarnings("unchecked")
 	public List<Usuario> selectAll() throws RuntimeException {

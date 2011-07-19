@@ -1,0 +1,7 @@
+
+insert into hondahs.usuario(nombre,legajo,tipoUsuario,clave) values ("Pablo Lamas",1,"ADMINISTRATIVO","1234");
+insert into hondahs.usuario(nombre,legajo,tipoUsuario,clave) values ("Oscar Lamas",2,"JEFEDETALLER","1234");
+insert into hondahs.usuario(nombre,legajo,tipoUsuario,clave) values ("Hernan Massad",3,"DUENIO","1234");
+insert into hondahs.usuario(nombre,legajo,tipoUsuario,clave) values ("Ezequiel Manfredi",4,"OPERARIO","1234");
+
+

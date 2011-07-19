@@ -39,9 +39,11 @@ public class LoginFrame extends JFrame {
 	private JLabel perfilLabel;
 	private JComboBox perfilComboBox;
 	private JButton loginButton;
-
+	private LoginFrame instancia;
+	
 	public LoginFrame() {
 		setTitle("Sistema de Administraci\u00F3n de \u00D3rdenes de Trabajo para Honda HS");
+		this.instancia = this;
 		initGUI();
 	}
 
@@ -110,13 +112,18 @@ public class LoginFrame extends JFrame {
 		loginButton.addActionListener(new ActionListener() {
 			@SuppressWarnings("deprecation")
 			public void actionPerformed(ActionEvent arg0) {
-				if (Sistema.getInstancia().validarLogin(
-						usuarioTextField.getText(),
-						passwordTextField.getText(),
-						perfilComboBox.getSelectedItem().toString())) {
-
-				} else {
-
+				if(Sistema.getInstancia().validarLogin(usuarioTextField.getText(), passwordTextField.getText(), 
+						perfilComboBox.getSelectedItem().toString())){
+					
+					
+					MenuPrincipal app = new MenuPrincipal();
+					app.setVisible(true);
+					app.setLocationRelativeTo(null);
+					
+					instancia.setVisible(false);
+					
+				}else{
+					
 				}
 			}
 		});
