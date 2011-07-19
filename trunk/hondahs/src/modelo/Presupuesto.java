@@ -10,7 +10,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 @Entity
-@Table(name="pedidoMateriales")
+@Table(name="presupuesto")
 public class Presupuesto {
 	
 	@Id
