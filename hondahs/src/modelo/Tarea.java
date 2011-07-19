@@ -2,6 +2,8 @@ package modelo;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -19,18 +21,18 @@ public class Tarea {
 	private Integer numero;
 	
 	@OneToOne
-	@JoinColumn(name="numero")
+	@JoinColumn(name="tipoTarea")
 	private TipoTarea tipoTarea;
 	
-	@OneToOne
-	@JoinColumn(name="numero")
+	@Enumerated(EnumType.STRING) 
+	@Column(name="estado")
 	private EstadoTarea estado;
 	
 	@Column(name="fechaFin",nullable=false)
 	private String fechaFin;
 	
 	@OneToOne
-	@JoinColumn(name="numero")
+	@JoinColumn(name="usuario")
 	private Usuario usuario;
 
 	public Tarea() {
