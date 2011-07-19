@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -20,6 +21,8 @@ import com.jgoodies.forms.factories.FormFactory;
 import com.jgoodies.forms.layout.ColumnSpec;
 import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.RowSpec;
+
+import controlador.Sistema;
 
 public class BuscarPresupuestoDialog extends JDialog {
 
@@ -63,6 +66,21 @@ public class BuscarPresupuestoDialog extends JDialog {
 
 		JButton btnBuscar = new JButton("Buscar");
 		filtrosPanel.add(btnBuscar, "8, 2, 1, 3");
+		btnBuscar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent evt) 
+			{
+				//Se obtienen los datos para buscar el presupuesto
+				String fechaInicio = fechaInicioTextField.getText();
+				String fechaFin = fechaFinTextField.getText();
+				
+				List<Presupuesto> presupuestos = Sistema.getInstancia().
+											getPresupuestos(fechaInicio,fechaFin);
+				
+				//incluyo los presupuestos encontrados en la tabla
+				if(presupuestos.size() > 0)
+					incluirPresupuestosEncontrados(presupuestos);
+			}
+		});
 
 		JLabel fechaFinalLabel = new JLabel("Fecha Final");
 		filtrosPanel.add(fechaFinalLabel, "2, 4, right, default");
@@ -145,5 +163,38 @@ public class BuscarPresupuestoDialog extends JDialog {
 
 	public IPresupuestoPerformer getPresupuestoPerformer() {
 		return this.presupuestoPerformer;
+	}
+	
+	private void incluirPresupuestosEncontrados(
+			List<Presupuesto> presupuestos) {
+
+		Object[][] data = new Object[presupuestos.size()][4];
+        int i = 0;
+        //TODO sacar el modelo de aca!!!
+        for (Presupuesto presupuesto : presupuestos) {
+        	data[i][0] = presupuesto.getNumero();
+			data[i][1] = presupuesto.getFecha();
+			data[i][2] = presupuesto.getCliente().getNombre();
+			data[i][3] = presupuesto.getVehiculo().getPatente() +"-"
+									+ presupuesto.getVehiculo().getModelo();
+			i++;
+		}
+        
+        String[] columnNames = {"Presupuesto",
+                "Fecha",
+                "Cliente",
+                "Vehiculo"};
+        
+        presupuestosTable = new JTable(data, columnNames);
+        presupuestosTable.setPreferredScrollableViewportSize(new Dimension(450,300));
+        presupuestosTable.setFillsViewportHeight(true);
+        
+       /* //Create the scroll pane and add the table to it.
+        JScrollPane scrollPane = new JScrollPane(presupuestosTable);
+        
+        //Add the scroll pane to this panel.
+        add(scrollPane);
+        scrollPane.setBounds(0, 0, 100, 100);*/
+		
 	}
 }

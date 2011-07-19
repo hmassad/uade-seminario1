@@ -123,7 +123,7 @@ public class InformeDAO {
 			return null;
 		}
 	}
-
+	
 	@SuppressWarnings("unchecked")
 	public List<Informe> selectAll() throws RuntimeException {
 

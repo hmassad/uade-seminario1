@@ -12,6 +12,7 @@ import modelo.Tarea;
 import modelo.TipoTarea;
 import modelo.TipoUsuario;
 import modelo.Usuario;
+import persistencia.InformeDAO;
 import persistencia.OrdenTrabajoDAO;
 import persistencia.PresupuestoDAO;
 import persistencia.TareaDAO;
@@ -101,7 +102,18 @@ public class Sistema {
 	}
 	
 	public void getDatosInforme(){
+	}
+	
+	/**
+	 * Busca los presupuestos con fecha entre fechaInicio y fechaFin
+	 * @param fechaInicio de la busqueda.
+	 * @param fechaFin de la busqueda.
+	 * @return List<Presupuesto> de presupuestos encontrados.
+	 */
+	public List<Presupuesto> getPresupuestos(String fechaInicio,String fechaFin){
+		//return PresupuestoDAO.getInstancia().selectAllByDates(fechaInicio, fechaFin);
 		
+		return PresupuestoDAO.getInstancia().selectAll();
 	}
 	
 	public void CrearTarea(String descripcionTipoTarea, String estadoTarea, String fechaFin){
