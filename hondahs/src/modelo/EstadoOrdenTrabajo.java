@@ -41,9 +41,9 @@ public enum EstadoOrdenTrabajo {
 	 * @param code Código cuyo elemento obtener.
 	 * @return Elemento obtenido, o null si ninguno coincide con dicho código.
 	 */
-	public static TipoUsuario fromCode(final String code) {
+	public static EstadoOrdenTrabajo fromCode(final String code) {
 
-		for (TipoUsuario tipoItem : TipoUsuario.values()) {
+		for (EstadoOrdenTrabajo tipoItem : EstadoOrdenTrabajo.values()) {
 			if (tipoItem.getCode().equals(code)) {
 				return (tipoItem);
 			}
