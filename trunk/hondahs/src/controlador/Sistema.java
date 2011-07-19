@@ -1,8 +1,13 @@
 package controlador;
 
-import persistencia.UsuarioDAO;
 import modelo.Cliente;
+import modelo.EstadoTarea;
+import modelo.OrdenTrabajo;
+import modelo.Tarea;
+import modelo.TipoTarea;
 import modelo.Usuario;
+import persistencia.OrdenTrabajoDAO;
+import persistencia.UsuarioDAO;
 
 public class Sistema {
 
@@ -18,22 +23,18 @@ public class Sistema {
 	private Sistema() {
 	}
 
-	public Cliente crearCliente(String nombre, String email, Integer telefono,
-			Integer celular, String direccion) {
+	public Cliente crearCliente(String nombre, String email, Integer telefono, Integer celular, String direccion) {
 		return new Cliente(nombre, email, telefono, celular, direccion);
 	}
 
 	public boolean validarLogin(String usuario, String password, String perfil) {
-		//busco al usuario con el nombre y password
-		Usuario usr = UsuarioDAO.getInstancia().select(usuario,password);
-		if(usr!=null){
-			if(usr.getTipoUsuario().getCode().equals(perfil)){
-				return true;
-			}else{
-				return false;
-			}		
-		}else{
-			return false;
-		}
+		// busco al usuario con el nombre y password
+		Usuario usr = UsuarioDAO.getInstancia().select(usuario, password);
+		return usr != null && usr.getTipoUsuario().getCode().equals(perfil);
+	}
+
+	public void agregarTarea(OrdenTrabajo ordenTrabajo, TipoTarea tipoTarea, Usuario operario) {
+		ordenTrabajo.getListaTareas().add(new Tarea(tipoTarea, EstadoTarea.ASIGNADA, null, operario));
+		OrdenTrabajoDAO.getInstancia().update(ordenTrabajo);
 	}
 }
