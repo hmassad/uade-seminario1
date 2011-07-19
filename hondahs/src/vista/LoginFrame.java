@@ -50,7 +50,7 @@ public class LoginFrame extends JFrame {
 	private void initGUI() {
 		this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		this.setResizable(false);
-		this.setSize(400, 200);
+		this.setSize(300, 200);
 		this.setLocationByPlatform(true);
 		getContentPane().setLayout(
 				new FormLayout(new ColumnSpec[] {
@@ -88,7 +88,7 @@ public class LoginFrame extends JFrame {
 
 		passwordLabel = new JLabel();
 		this.getContentPane().add(passwordLabel, "2, 6, fill, fill");
-		passwordLabel.setText("Contrase�a");
+		passwordLabel.setText("Contrase\u00F1a");
 
 		passwordTextField = new JPasswordField();
 		passwordLabel.setLabelFor(passwordTextField);

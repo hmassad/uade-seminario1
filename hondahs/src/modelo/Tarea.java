@@ -24,7 +24,7 @@ public class Tarea {
 	
 	@OneToOne
 	@JoinColumn(name="numero")
-	private TipoTarea estado;
+	private EstadoTarea estado;
 	
 	@Column(name="fechaFin",nullable=false)
 	private String fechaFin;
@@ -36,7 +36,7 @@ public class Tarea {
 	public Tarea() {
 	}
 
-	public Tarea(TipoTarea tipoTarea, TipoTarea estado,
+	public Tarea(TipoTarea tipoTarea, EstadoTarea estado,
 			String fechaFin, Usuario usuario) {
 		
 		this.tipoTarea = tipoTarea;
@@ -63,11 +63,11 @@ public class Tarea {
 		this.tipoTarea = tipoTarea;
 	}
 
-	public TipoTarea getEstado() {
+	public EstadoTarea getEstado() {
 		return estado;
 	}
 
-	public void setEstado(TipoTarea estado) {
+	public void setEstado(EstadoTarea estado) {
 		this.estado = estado;
 	}
 
