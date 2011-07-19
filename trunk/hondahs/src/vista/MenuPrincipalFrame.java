@@ -5,6 +5,7 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
@@ -19,19 +20,30 @@ public class MenuPrincipalFrame extends JFrame implements ILoginPerformer {
 
 	private static final long serialVersionUID = 1L;
 
-	public static void main(String[] args) throws ClassNotFoundException, InstantiationException, IllegalAccessException, UnsupportedLookAndFeelException {
+	private static int maxIntentosFallidos = 3;
+
+	public static void main(String[] args) throws ClassNotFoundException,
+			InstantiationException, IllegalAccessException,
+			UnsupportedLookAndFeelException {
 		UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-			MenuPrincipalFrame mp = new MenuPrincipalFrame();
-			// int i = 0;
-			// while (mp.getUsuario() == null && i < 3) {
-			// LoginDialog loginDialog = new LoginDialog();
-			// loginDialog.setLoginPerformer(mp);
-			// loginDialog.setVisible(true);
-			// i++;
-			// }
-			// if (i >= 3)
-			// return;
-			mp.setVisible(true);
+		MenuPrincipalFrame mp = new MenuPrincipalFrame();
+		int i = 0;
+		while (mp.getUsuario() == null && i < maxIntentosFallidos) {
+			LoginDialog loginDialog = new LoginDialog();
+			loginDialog.setLoginPerformer(mp);
+			loginDialog.setVisible(true);
+			i++;
+		}
+		if (i >= maxIntentosFallidos) {
+			JOptionPane
+					.showMessageDialog(
+							mp,
+							"Se alcanzó el tope de intentos fallidos. La aplicación se cerrará.",
+							"Error de Usuario y/o Contraseña",
+							JOptionPane.ERROR_MESSAGE);
+			return;
+		}
+		mp.setVisible(true);
 	}
 
 	private Usuario usuario;
@@ -51,7 +63,10 @@ public class MenuPrincipalFrame extends JFrame implements ILoginPerformer {
 						FormFactory.DEFAULT_ROWSPEC,
 						FormFactory.RELATED_GAP_ROWSPEC,
 						FormFactory.DEFAULT_ROWSPEC,
-						FormFactory.UNRELATED_GAP_ROWSPEC, }));
+						FormFactory.RELATED_GAP_ROWSPEC,
+						FormFactory.DEFAULT_ROWSPEC,
+						FormFactory.RELATED_GAP_ROWSPEC,
+						FormFactory.DEFAULT_ROWSPEC, }));
 
 		JButton generarOrdenTrabajoButton = new JButton(
 				"Generar Orden de Trabajo");
@@ -61,11 +76,37 @@ public class MenuPrincipalFrame extends JFrame implements ILoginPerformer {
 				generarOrdenTrabajoDialog.setVisible(true);
 			}
 		});
-		getContentPane().add(generarOrdenTrabajoButton, "2, 2, left, top");
+		getContentPane().add(generarOrdenTrabajoButton, "2, 2, fill, fill");
 
 		JButton informesButton = new JButton(
 				"Generar Informe de \u00D3rdenes de Trabajo");
-		getContentPane().add(informesButton, "2, 4, left, top");
+		informesButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				InformeFrame informeFrame = new InformeFrame();
+				informeFrame.setVisible(true);
+			}
+		});
+
+		JButton actualizarOrdenTrabajoButton = new JButton(
+				"Actualizar Orden de Trabajo");
+		actualizarOrdenTrabajoButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				ActualizarOrdenTrabajoDialog actualizarOrdenTrabajoDialog = new ActualizarOrdenTrabajoDialog();
+				actualizarOrdenTrabajoDialog.setVisible(true);
+			}
+		});
+		getContentPane().add(actualizarOrdenTrabajoButton, "2, 4");
+		getContentPane().add(informesButton, "2, 6, fill, fill");
+
+		JButton actualizarTareaButton = new JButton(
+				"Actualizar Estado de Tarea");
+		actualizarTareaButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				ActualizarEstadoTareaDialog actualizarEstadoTareaDialog = new ActualizarEstadoTareaDialog();
+				actualizarEstadoTareaDialog.setVisible(true);
+			}
+		});
+		getContentPane().add(actualizarTareaButton, "2, 8, fill, fill");
 	}
 
 	@Override

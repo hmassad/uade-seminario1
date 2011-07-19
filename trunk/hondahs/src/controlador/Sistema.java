@@ -1,6 +1,7 @@
 package controlador;
 
 import java.util.List;
+import java.util.Vector;
 
 import modelo.Cliente;
 import modelo.EstadoOrdenTrabajo;
@@ -9,8 +10,10 @@ import modelo.OrdenTrabajo;
 import modelo.Presupuesto;
 import modelo.Tarea;
 import modelo.TipoTarea;
+import modelo.TipoUsuario;
 import modelo.Usuario;
 import persistencia.OrdenTrabajoDAO;
+import persistencia.TareaDAO;
 import persistencia.UsuarioDAO;
 
 public class Sistema {
@@ -41,7 +44,16 @@ public class Sistema {
 		return null;
 	}
 
-	public OrdenTrabajo grenerarOrdenTrabajo(Presupuesto presupuesto,
+	public Usuario[] getOperarios() {
+		List<Usuario> operarios = new Vector<Usuario>();
+		for (Usuario usuario : UsuarioDAO.getInstancia().selectAll()) {
+			if (usuario.getTipoUsuario().getCode().equals(TipoUsuario.OPERARIO))
+				operarios.add(usuario);
+		}
+		return (Usuario[]) operarios.toArray();
+	}
+
+	public OrdenTrabajo generarOrdenTrabajo(Presupuesto presupuesto,
 			String fechaInicio, String fechaFin, EstadoOrdenTrabajo estado,
 			List<Tarea> listaTareas) {
 		OrdenTrabajo ordenTrabajo = new OrdenTrabajo(presupuesto, fechaInicio,
@@ -56,6 +68,20 @@ public class Sistema {
 		ordenTrabajo.getListaTareas().add(
 				new Tarea(tipoTarea, EstadoTarea.ASIGNADA, null, operario));
 		OrdenTrabajoDAO.getInstancia().update(ordenTrabajo);
+	}
+
+	public void modificarEstadoTarea(Tarea tarea, EstadoTarea estadoTarea) {
+		tarea.setEstado(estadoTarea);
+		TareaDAO.getInstancia().update(tarea);
+	}
+
+	public Tarea[] getTareasPorOperario(Usuario usuario) {
+		List<Tarea> tareas = new Vector<Tarea>();
+		for (Tarea tarea : TareaDAO.getInstancia().selectAll()) {
+			if (tarea.getUsuario().equals(usuario))
+				tareas.add(tarea);
+		}
+		return (Tarea[]) tareas.toArray();
 	}
 
 }

@@ -20,6 +20,9 @@ import com.jgoodies.forms.factories.FormFactory;
 import com.jgoodies.forms.layout.ColumnSpec;
 import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.RowSpec;
+
+import controlador.Sistema;
+
 import java.awt.Dimension;
 
 public class AgregarTareaDialog extends JDialog {
@@ -67,6 +70,9 @@ public class AgregarTareaDialog extends JDialog {
 
 		operariosComboBox = new JComboBox();
 		contentPanel.add(operariosComboBox, "5, 4, fill, default");
+		operariosComboBox.setModel(new DefaultComboBoxModel(
+			Sistema.getInstancia().getOperarios()
+		));
 
 		botonesPanel = new JPanel();
 		getContentPane().add(botonesPanel, BorderLayout.SOUTH);
@@ -96,14 +102,6 @@ public class AgregarTareaDialog extends JDialog {
 			}
 		});
 		botonesPanel.add(aceptarButton);
-	}
-
-	public void setOperarios(Usuario[] operarios) {
-		operariosComboBox.setModel(new DefaultComboBoxModel(operarios));
-	}
-
-	public void setTiposTarea(TipoTarea[] tiposTarea) {
-		tiposTareaComboBox.setModel(new DefaultComboBoxModel(tiposTarea));
 	}
 
 	public ITareaPerformer getTareaPerformer() {

@@ -1,6 +1,7 @@
 package vista;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
@@ -25,9 +26,8 @@ import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.RowSpec;
 
 import controlador.Sistema;
-import java.awt.Dimension;
 
-public class GenerarOrdenTrabajoDialog extends JDialog implements
+public class ActualizarOrdenTrabajoDialog extends JDialog implements
 		IPresupuestoPerformer, ITareaPerformer {
 
 	private static final long serialVersionUID = 1L;
@@ -48,7 +48,7 @@ public class GenerarOrdenTrabajoDialog extends JDialog implements
 	private JButton agregarTareaButton;
 	private JButton eliminarTareaButton;
 
-	public GenerarOrdenTrabajoDialog() {
+	public ActualizarOrdenTrabajoDialog() {
 		setName("generarOrdenTrabajoDialog");
 		setModal(true);
 		setSize(new Dimension(400, 300));
@@ -80,7 +80,7 @@ public class GenerarOrdenTrabajoDialog extends JDialog implements
 				BuscarPresupuestoDialog buscarPresupuestoDialog = new BuscarPresupuestoDialog();
 				buscarPresupuestoDialog.setVisible(true);
 				buscarPresupuestoDialog
-						.setPresupuestoPerformer(GenerarOrdenTrabajoDialog.this);
+						.setPresupuestoPerformer(ActualizarOrdenTrabajoDialog.this);
 			}
 		});
 
@@ -139,7 +139,7 @@ public class GenerarOrdenTrabajoDialog extends JDialog implements
 			public void actionPerformed(ActionEvent arg0) {
 				AgregarTareaDialog agregarTareaDialog = new AgregarTareaDialog();
 				agregarTareaDialog
-						.setTareaPerformer(GenerarOrdenTrabajoDialog.this);
+						.setTareaPerformer(ActualizarOrdenTrabajoDialog.this);
 				agregarTareaDialog.setVisible(true);
 			}
 		});
@@ -151,7 +151,7 @@ public class GenerarOrdenTrabajoDialog extends JDialog implements
 				// TODO obtener la tarea seleccionada
 				Tarea tarea = null;
 				if (tarea != null)
-					GenerarOrdenTrabajoDialog.this.removeTarea(tarea);
+					ActualizarOrdenTrabajoDialog.this.removeTarea(tarea);
 			}
 		});
 		tareasButtonsPanel.add(eliminarTareaButton, "4, 2");
@@ -163,7 +163,7 @@ public class GenerarOrdenTrabajoDialog extends JDialog implements
 		botonesPanel.add(cancelarButton);
 		cancelarButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				GenerarOrdenTrabajoDialog.this.dispose();
+				ActualizarOrdenTrabajoDialog.this.dispose();
 			}
 		});
 
@@ -172,11 +172,11 @@ public class GenerarOrdenTrabajoDialog extends JDialog implements
 		aceptarButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				Sistema.getInstancia().generarOrdenTrabajo(
-						GenerarOrdenTrabajoDialog.this.getPresupuesto(),
+						ActualizarOrdenTrabajoDialog.this.getPresupuesto(),
 						new java.util.Date().toString(), null,
 						EstadoOrdenTrabajo.PREPARADO,
-						GenerarOrdenTrabajoDialog.this.getTareas());
-				GenerarOrdenTrabajoDialog.this.dispose();
+						ActualizarOrdenTrabajoDialog.this.getTareas());
+				ActualizarOrdenTrabajoDialog.this.dispose();
 			}
 		});
 
@@ -185,7 +185,7 @@ public class GenerarOrdenTrabajoDialog extends JDialog implements
 
 	protected void updateTareasTable() {
 		// TODO borrar el contenido de la tabla
-		for(Tarea tarea:this.tareas){
+		for (Tarea tarea : this.tareas) {
 			// TODO agregar las tareas a la tabla
 		}
 	}

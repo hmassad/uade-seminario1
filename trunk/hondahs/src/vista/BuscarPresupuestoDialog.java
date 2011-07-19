@@ -29,7 +29,7 @@ public class BuscarPresupuestoDialog extends JDialog {
 
 	private JTable presupuestosTable;
 	private JTextField fechaInicioTextField;
-	private JTextField textField;
+	private JTextField fechaFinTextField;
 
 	public BuscarPresupuestoDialog() {
 		setName("buscarPresupuestoDialog");
@@ -67,9 +67,9 @@ public class BuscarPresupuestoDialog extends JDialog {
 		JLabel fechaFinalLabel = new JLabel("Fecha Final");
 		filtrosPanel.add(fechaFinalLabel, "2, 4, right, default");
 
-		textField = new JTextField();
-		textField.setColumns(10);
-		filtrosPanel.add(textField, "4, 4, fill, default");
+		fechaFinTextField = new JTextField();
+		fechaFinTextField.setColumns(10);
+		filtrosPanel.add(fechaFinTextField, "4, 4, fill, default");
 
 		JButton fechaFinHoyButton = new JButton("hoy");
 		filtrosPanel.add(fechaFinHoyButton, "6, 4");
@@ -110,6 +110,7 @@ public class BuscarPresupuestoDialog extends JDialog {
 		presupuestosTable.getColumnModel().getColumn(3).setResizable(false);
 		presupuestosTable.getColumnModel().getColumn(3).setMinWidth(75);
 		presupuestosTable.getColumnModel().getColumn(3).setMaxWidth(75);
+		tablaPanel.setLayout(new BorderLayout(0, 0));
 		tablaPanel.add(presupuestosTable);
 
 		JPanel botonesPanel = new JPanel();
