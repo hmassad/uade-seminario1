@@ -50,3 +50,28 @@ insert into hondahs.presupuesto(fecha,idCliente,idVehiculo) values ("15/02/2011"
 insert into hondahs.presupuesto(fecha,idCliente,idVehiculo) values ("16/02/2011",3,13);
 insert into hondahs.presupuesto(fecha,idCliente,idVehiculo) values ("16/02/2011",4,14);
 insert into hondahs.presupuesto(fecha,idCliente,idVehiculo) values ("16/02/2011",5,15);
+
+/* insert de presupuesto */
+insert into hondahs.tipotarea(numero,descripcion) values (1,"Motor: Nivel");
+insert into hondahs.tipotarea(numero,descripcion) values (2,"Motor: Cambio de Aceite");
+insert into hondahs.tipotarea(numero,descripcion) values (3,"Filtro: Cambio");
+insert into hondahs.tipotarea(numero,descripcion) values (4,"Filtro Nafta: Cambio");
+insert into hondahs.tipotarea(numero,descripcion) values (5,"Filtro Aire: Cambio");
+insert into hondahs.tipotarea(numero,descripcion) values (6,"Frenos: Purgar");
+insert into hondahs.tipotarea(numero,descripcion) values (7,"Frenos: Nivel");
+insert into hondahs.tipotarea(numero,descripcion) values (8,"Frenos: Cambio");
+insert into hondahs.tipotarea(numero,descripcion) values (9,"Diferencial: Nivel");
+insert into hondahs.tipotarea(numero,descripcion) values (10,"Diferencial: Cambio de Aceite");
+insert into hondahs.tipotarea(numero,descripcion) values (11,"Caja de Velocidades: Nivel");
+insert into hondahs.tipotarea(numero,descripcion) values (12,"Caja de Velocidades: Cambio de Aceite");
+insert into hondahs.tipotarea(numero,descripcion) values (13,"Dirección Hidráulica: Nivel");
+insert into hondahs.tipotarea(numero,descripcion) values (14,"Radiador: Nivel");
+insert into hondahs.tipotarea(numero,descripcion) values (15,"Radiador: Cambiar Refrigerante");
+insert into hondahs.tipotarea(numero,descripcion) values (16,"Radiador: Reparar");
+insert into hondahs.tipotarea(numero,descripcion) values (17,"Lavado: Carrocería");
+insert into hondahs.tipotarea(numero,descripcion) values (18,"Lavado: Completo");
+insert into hondahs.tipotarea(numero,descripcion) values (19,"Lavado: Motor");
+insert into hondahs.tipotarea(numero,descripcion) values (20,"Lavado: Chasis");
+insert into hondahs.tipotarea(numero,descripcion) values (21,"Batería: Nivel");
+insert into hondahs.tipotarea(numero,descripcion) values (22,"Batería: Cambiar");
+insert into hondahs.tipotarea(numero,descripcion) values (23,"Engrase");
