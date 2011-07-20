@@ -29,7 +29,7 @@ public class OrdenTrabajo {
 	@Column(name = "fechaInicio", nullable = false)
 	private String fechaInicio;
 
-	@Column(name = "fechaFin", nullable = false)
+	@Column(name = "fechaFin", nullable = true)
 	private String fechaFin;
 
 	@Column(name = "estado", nullable = false)

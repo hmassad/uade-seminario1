@@ -4,6 +4,10 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+import java.util.Vector;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -12,7 +16,12 @@ import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
-import javax.swing.table.DefaultTableModel;
+import javax.swing.SwingConstants;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
+import javax.swing.table.AbstractTableModel;
 
 import modelo.Tarea;
 import modelo.Usuario;
@@ -26,22 +35,140 @@ import controlador.Sistema;
 
 public class TareasAsignadasDialog extends JDialog {
 
+	class TareasTableModel extends AbstractTableModel {
+
+		private static final long serialVersionUID = 1L;
+
+		List<Tarea> tareas = new Vector<Tarea>();
+
+		public void clear() {
+			int rows = tareas.size();
+			tareas.clear();
+			TableModelEvent event = new TableModelEvent(this, 0, rows,
+					TableModelEvent.ALL_COLUMNS, TableModelEvent.DELETE);
+			for (Object l : listenerList.getListenerList())
+				if (l instanceof TableModelListener) {
+					((TableModelListener) l).tableChanged(event);
+				}
+		}
+
+		public void add(Tarea tarea) {
+			tareas.add(tarea);
+			TableModelEvent event = new TableModelEvent(this,
+					tareas.size() - 1, tareas.size() - 1,
+					TableModelEvent.ALL_COLUMNS, TableModelEvent.DELETE);
+			for (Object l : listenerList.getListenerList())
+				if (l instanceof TableModelListener) {
+					((TableModelListener) l).tableChanged(event);
+				}
+		}
+
+		public void remove(Tarea tarea) {
+			int index = tareas.indexOf(tarea);
+			tareas.remove(tarea);
+
+			for (Object l : listenerList.getListenerList())
+				if (l instanceof TableModelListener) {
+					((TableModelListener) l).tableChanged(new TableModelEvent(
+							this, index, index, TableModelEvent.ALL_COLUMNS,
+							TableModelEvent.DELETE));
+				}
+		}
+
+		public Tarea getTareaAt(int rowIndex) {
+			return tareas.get(rowIndex);
+		}
+
+		String[] titulos = new String[] { "Número", "Tarea", "Fecha Inicio",
+				"Fecha Fin", "Estado" };
+
+		@Override
+		public String getColumnName(int column) {
+			return titulos[column];
+		}
+
+		@Override
+		public int getColumnCount() {
+			return titulos.length;
+		}
+
+		@Override
+		public int getRowCount() {
+			return tareas.size();
+		}
+
+		@Override
+		public Object getValueAt(int rowIndex, int columnIndex) {
+			Tarea tarea = tareas.get(rowIndex);
+			switch (columnIndex) {
+			case 0:
+				return tarea.getNumero();
+			case 1:
+				return tarea.getTipoTarea().getDescripcion();
+			case 2:
+				return tarea.getFechaInicio();
+			case 3:
+				return tarea.getFechaFin();
+			case 4:
+				return tarea.getEstado().toString();
+			}
+			throw new RuntimeException("La columna no existe.");
+		}
+
+		@SuppressWarnings("rawtypes")
+		Class[] columnTypes = new Class[] { Integer.class, String.class,
+				String.class, String.class, String.class };
+
+		@SuppressWarnings({ "unchecked", "rawtypes" })
+		public Class getColumnClass(int columnIndex) {
+			return columnTypes[columnIndex];
+		}
+
+		boolean[] columnEditables = new boolean[] { false, false, false, false,
+				false };
+
+		public boolean isCellEditable(int row, int column) {
+			return columnEditables[column];
+		}
+
+		public void setTareas(List<Tarea> tareas) {
+			clear();
+			for (Tarea tarea : tareas)
+				add(tarea);
+		}
+
+		public List<Tarea> getTareas() {
+			return tareas;
+		}
+	}
+
 	private static final long serialVersionUID = 1L;
 
-	Usuario usuario;
+	private Usuario usuario;
+	private TareasTableModel tareasTableModel;
 
 	private JTable tareasTable;
 	private JTextField fechaInicioTextField;
-	private JTextField textField;
+	private JTextField fechaFinTextField;
+	private JPanel filtrosPanel;
+	private JLabel fechaInicioLabel;
+	private JButton fechaInicioHoyButton;
+	private JButton buscarButton;
+	private JLabel fechaFinalLabel;
+	private JButton fechaFinHoyButton;
+	private JButton modificarButton;
+	private JButton cancelarButton;
+	private JPanel botonesPanel;
+	private JPanel tablaPanel;
 
 	public TareasAsignadasDialog() {
-		setName("buscarPresupuestoDialog");
+		setName("tareasAsignadasDialog");
 		setModal(true);
 		setSize(new Dimension(400, 300));
 		setPreferredSize(new Dimension(400, 300));
-		setTitle("Buscar Presupuesto");
+		setTitle("Tareas Asignadas");
 
-		JPanel filtrosPanel = new JPanel();
+		filtrosPanel = new JPanel();
 		getContentPane().add(filtrosPanel, BorderLayout.NORTH);
 		filtrosPanel.setLayout(new FormLayout(new ColumnSpec[] {
 				FormFactory.UNRELATED_GAP_COLSPEC, FormFactory.DEFAULT_COLSPEC,
@@ -54,72 +181,86 @@ public class TareasAsignadasDialog extends JDialog {
 				FormFactory.UNRELATED_GAP_ROWSPEC, FormFactory.DEFAULT_ROWSPEC,
 				FormFactory.UNRELATED_GAP_ROWSPEC, }));
 
-		JLabel fechaInicioLabel = new JLabel("Fecha Inicio");
+		fechaInicioLabel = new JLabel("Fecha Inicio");
 		filtrosPanel.add(fechaInicioLabel, "2, 2, right, default");
 
 		fechaInicioTextField = new JTextField();
+		fechaInicioTextField.setHorizontalAlignment(SwingConstants.CENTER);
 		filtrosPanel.add(fechaInicioTextField, "4, 2, fill, default");
 		fechaInicioTextField.setColumns(10);
+		fechaInicioTextField.setText(new SimpleDateFormat("dd/MM/yy")
+				.format(new Date()));
 
-		JButton fechaInicioHoyButton = new JButton("Hoy");
+		fechaInicioHoyButton = new JButton("Hoy");
+		fechaInicioHoyButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				fechaInicioTextField.setText(new SimpleDateFormat("dd/MM/yy")
+						.format(new Date()));
+			}
+		});
 		filtrosPanel.add(fechaInicioHoyButton, "6, 2");
 
-		JButton btnBuscar = new JButton("Buscar");
-		filtrosPanel.add(btnBuscar, "8, 2, 1, 3");
+		buscarButton = new JButton("Buscar");
+		buscarButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				actualizarTareas();
+			}
+		});
+		filtrosPanel.add(buscarButton, "8, 2, 1, 3");
 
-		JLabel fechaFinalLabel = new JLabel("Fecha Final");
+		fechaFinalLabel = new JLabel("Fecha Final");
 		filtrosPanel.add(fechaFinalLabel, "2, 4, right, default");
 
-		textField = new JTextField();
-		textField.setColumns(10);
-		filtrosPanel.add(textField, "4, 4, fill, default");
+		fechaFinTextField = new JTextField();
+		fechaFinTextField.setHorizontalAlignment(SwingConstants.CENTER);
+		fechaFinTextField.setColumns(10);
+		filtrosPanel.add(fechaFinTextField, "4, 4, fill, default");
+		fechaFinTextField.setText(new SimpleDateFormat("dd/MM/yy")
+				.format(new Date()));
 
-		JButton fechaFinHoyButton = new JButton("hoy");
+		fechaFinHoyButton = new JButton("Hoy");
+		fechaFinHoyButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				fechaFinTextField.setText(new SimpleDateFormat("dd/MM/yy")
+						.format(new Date()));
+			}
+		});
 		filtrosPanel.add(fechaFinHoyButton, "6, 4");
 
-		JPanel tablaPanel = new JPanel();
+		tablaPanel = new JPanel();
 		getContentPane().add(tablaPanel, BorderLayout.CENTER);
+
+		tareasTableModel = new TareasTableModel();
 
 		tareasTable = new JTable();
 		tareasTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		tareasTable.setDoubleBuffered(true);
 		tareasTable.setFillsViewportHeight(true);
 		tablaPanel.setLayout(new BorderLayout(0, 0));
-		tareasTable.setModel(new DefaultTableModel(new Object[][] {
-				{ null, null, null, null, null },
-				{ null, null, null, null, null },
-				{ null, null, null, null, null },
-				{ null, null, null, null, null },
-				{ null, null, null, null, null },
-				{ null, null, null, null, null },
-				{ null, null, null, null, null }, }, new String[] { "OT",
-				"Tipo de Tarea", "Fecha Inicio", "Fecha Fin", "Estado" }) {
-			Class[] columnTypes = new Class[] { Integer.class, String.class,
-					Object.class, Object.class, String.class };
-
-			public Class getColumnClass(int columnIndex) {
-				return columnTypes[columnIndex];
-			}
-
-			boolean[] columnEditables = new boolean[] { false, false, false,
-					true, true };
-
-			public boolean isCellEditable(int row, int column) {
-				return columnEditables[column];
-			}
-		});
+		tareasTable.setModel(tareasTableModel);
 		tareasTable.getColumnModel().getColumn(0).setResizable(false);
 		tareasTable.getColumnModel().getColumn(1).setPreferredWidth(142);
 		tareasTable.getColumnModel().getColumn(2).setResizable(false);
 		tareasTable.getColumnModel().getColumn(3).setResizable(false);
-		tareasTable.getColumnModel().getColumn(3).setMinWidth(75);
-		tareasTable.getColumnModel().getColumn(3).setMaxWidth(75);
+		tareasTable.getColumnModel().getColumn(4).setResizable(false);
 		tablaPanel.add(tareasTable);
+		ListSelectionModel rowSM = tareasTable.getSelectionModel();
+		rowSM.addListSelectionListener(new ListSelectionListener() {
+			public void valueChanged(ListSelectionEvent e) {
+				if (e.getValueIsAdjusting())
+					return;
+				ListSelectionModel rowSM = (ListSelectionModel) e.getSource();
+				int selectedIndex = rowSM.getMinSelectionIndex();
+				// do something with selected index
+				TareasAsignadasDialog.this.modificarButton
+						.setEnabled(selectedIndex != -1);
+			}
+		});
 
-		JPanel botonesPanel = new JPanel();
+		botonesPanel = new JPanel();
 		getContentPane().add(botonesPanel, BorderLayout.SOUTH);
 
-		JButton cancelarButton = new JButton("Cancelar");
+		cancelarButton = new JButton("Cancelar");
 		cancelarButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				TareasAsignadasDialog.this.dispose();
@@ -127,17 +268,16 @@ public class TareasAsignadasDialog extends JDialog {
 		});
 		botonesPanel.add(cancelarButton);
 
-		JButton modificarButton = new JButton("Modificar");
+		modificarButton = new JButton("Modificar");
+		modificarButton.setEnabled(false);
 		modificarButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				// TODO: Obtener la tarea seleccionada
-				Tarea tarea = null;
-				if (tarea != null) {
-					ActualizarEstadoTareaDialog actualizarEstadoTareaDialog = new ActualizarEstadoTareaDialog();
-					actualizarEstadoTareaDialog.setTarea(tarea);
-					actualizarEstadoTareaDialog.setVisible(true);
-					updateTareasTable();
-				}
+				Tarea tarea = TareasAsignadasDialog.this.tareasTableModel
+						.getTareaAt(tareasTable.getSelectedRow());
+				ActualizarEstadoTareaDialog actualizarEstadoTareaDialog = new ActualizarEstadoTareaDialog();
+				actualizarEstadoTareaDialog.setTarea(tarea);
+				actualizarEstadoTareaDialog.setVisible(true);
+				actualizarTareas();
 			}
 		});
 		botonesPanel.add(modificarButton);
@@ -151,9 +291,11 @@ public class TareasAsignadasDialog extends JDialog {
 		return this.usuario;
 	}
 
-	private void updateTareasTable() {
-		for (Tarea tarea : Sistema.getInstancia().getTareasPorOperario(usuario)) {
-			// TODO cargar tareas en la grilla
+	private void actualizarTareas() {
+		tareasTableModel.clear();
+		Tarea[] tareas = Sistema.getInstancia().getTareasPorOperario(usuario);
+		for (Tarea tarea : tareas) {
+			tareasTableModel.add(tarea);
 		}
 	}
 }

@@ -32,12 +32,10 @@ public class MenuPrincipalFrame extends JFrame implements ILoginPerformer {
 		loginDialog.setVisible(true);
 
 		if (mp.getUsuario() == null) {
-			JOptionPane
-					.showMessageDialog(
-							mp,
-							"El usuario o la contraseña son incorrectos.",
-							"Error de Usuario y/o Contraseña",
-							JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(mp,
+					"El usuario o la contraseña son incorrectos.",
+					"Error de Usuario y/o Contraseña",
+					JOptionPane.ERROR_MESSAGE);
 			return;
 		}
 		mp.setVisible(true);
@@ -89,6 +87,7 @@ public class MenuPrincipalFrame extends JFrame implements ILoginPerformer {
 		actualizarOrdenTrabajoButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				ActualizarOrdenTrabajoDialog actualizarOrdenTrabajoDialog = new ActualizarOrdenTrabajoDialog();
+				//actualizarOrdenTrabajoDialog.setUsuario(usuario);
 				actualizarOrdenTrabajoDialog.setVisible(true);
 			}
 		});
@@ -99,8 +98,9 @@ public class MenuPrincipalFrame extends JFrame implements ILoginPerformer {
 				"Actualizar Estado de Tarea");
 		actualizarTareaButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				ActualizarEstadoTareaDialog actualizarEstadoTareaDialog = new ActualizarEstadoTareaDialog();
-				actualizarEstadoTareaDialog.setVisible(true);
+				TareasAsignadasDialog tareasAsignadasDialog = new TareasAsignadasDialog();
+				tareasAsignadasDialog.setUsuario(usuario);
+				tareasAsignadasDialog.setVisible(true);
 			}
 		});
 		getContentPane().add(actualizarTareaButton, "2, 8, fill, fill");
