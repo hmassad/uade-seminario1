@@ -31,6 +31,9 @@ public class Tarea {
 	@Column(name="fechaFin",nullable=false)
 	private String fechaFin;
 	
+	@Column(name="fechaInicio",nullable=false)
+	private String fechaInicio;
+
 	@OneToOne
 	@JoinColumn(name="usuario")
 	private Usuario usuario;
@@ -79,6 +82,14 @@ public class Tarea {
 
 	public void setFechaFin(String fechaFin) {
 		this.fechaFin = fechaFin;
+	}
+
+	public String getFechaInicio() {
+		return fechaInicio;
+	}
+
+	public void setFechaInicio(String fechaInicio) {
+		this.fechaInicio = fechaInicio;
 	}
 
 	public Usuario getUsuario() {

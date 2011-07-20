@@ -28,6 +28,7 @@ import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.RowSpec;
 
 import controlador.Sistema;
+import javax.swing.JScrollPane;
 
 public class GenerarOrdenTrabajoDialog extends JDialog implements
 		IPresupuestoPerformer, ITareaPerformer {
@@ -36,7 +37,8 @@ public class GenerarOrdenTrabajoDialog extends JDialog implements
 
 		private static final long serialVersionUID = 1L;
 
-		List<Tarea> tareas = new Vector<Tarea>();
+		private List<Tarea> tareas = new Vector<Tarea>();
+		private String[] titulos = new String[] { "Número", "Tarea", "Operario" };
 
 		public void clear() {
 			int rows = tareas.size();
@@ -76,7 +78,10 @@ public class GenerarOrdenTrabajoDialog extends JDialog implements
 			return tareas.get(rowIndex);
 		}
 
-		String[] titulos = new String[] { "Número", "Tarea", "Operario" };
+		@Override
+		public String getColumnName(int column) {
+			return titulos[column];
+		}
 
 		@Override
 		public int getColumnCount() {
@@ -145,6 +150,7 @@ public class GenerarOrdenTrabajoDialog extends JDialog implements
 	private JPanel tareasButtonsPanel;
 	private JButton agregarTareaButton;
 	private JButton eliminarTareaButton;
+	private JScrollPane scrollPane;
 
 	public GenerarOrdenTrabajoDialog() {
 		setName("generarOrdenTrabajoDialog");
@@ -175,8 +181,9 @@ public class GenerarOrdenTrabajoDialog extends JDialog implements
 		filtrosPanel.add(buscarButton, "6, 2");
 		buscarButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				BuscarPresupuestoDialog buscarPresupuestoDialog = new BuscarPresupuestoDialog(
-						GenerarOrdenTrabajoDialog.this);
+				BuscarPresupuestoDialog buscarPresupuestoDialog = new BuscarPresupuestoDialog();
+				buscarPresupuestoDialog
+						.setPresupuestoPerformer(GenerarOrdenTrabajoDialog.this);
 				buscarPresupuestoDialog.setVisible(true);
 				cargarNumeroPresupuesto();
 			}
@@ -184,19 +191,9 @@ public class GenerarOrdenTrabajoDialog extends JDialog implements
 
 		tareasPanel = new JPanel();
 		getContentPane().add(tareasPanel, BorderLayout.CENTER);
+		tareasPanel.setLayout(new BorderLayout());
 
 		tareasTableModel = new TareasTableModel();
-
-		tareasTable = new JTable();
-		tareasTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		tareasTable.setDoubleBuffered(true);
-		tareasTable.setFillsViewportHeight(true);
-		tareasTable.setModel(tareasTableModel);
-		tareasTable.getColumnModel().getColumn(0).setResizable(false);
-		tareasTable.getColumnModel().getColumn(1).setResizable(false);
-		tareasTable.getColumnModel().getColumn(2).setResizable(false);
-		tareasPanel.setLayout(new BorderLayout(0, 0));
-		tareasPanel.add(tareasTable);
 
 		tareasButtonsPanel = new JPanel();
 		tareasPanel.add(tareasButtonsPanel, BorderLayout.NORTH);
@@ -231,6 +228,19 @@ public class GenerarOrdenTrabajoDialog extends JDialog implements
 			}
 		});
 		tareasButtonsPanel.add(eliminarTareaButton, "4, 2");
+		
+		scrollPane = new JScrollPane();
+		tareasPanel.add(scrollPane, BorderLayout.CENTER);
+
+		tareasTable = new JTable();
+		scrollPane.setViewportView(tareasTable);
+		tareasTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		tareasTable.setDoubleBuffered(true);
+		tareasTable.setFillsViewportHeight(true);
+		tareasTable.setModel(tareasTableModel);
+		tareasTable.getColumnModel().getColumn(0).setResizable(false);
+		tareasTable.getColumnModel().getColumn(1).setResizable(false);
+		tareasTable.getColumnModel().getColumn(2).setResizable(false);
 
 		botonesPanel = new JPanel();
 		getContentPane().add(botonesPanel, BorderLayout.SOUTH);

@@ -17,7 +17,7 @@ import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.AbstractTableModel;
 
-import modelo.Presupuesto;
+import modelo.OrdenTrabajo;
 
 import com.jgoodies.forms.factories.FormFactory;
 import com.jgoodies.forms.layout.ColumnSpec;
@@ -25,18 +25,19 @@ import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.RowSpec;
 
 import controlador.Sistema;
+import javax.swing.ListSelectionModel;
 
-public class BuscarPresupuestoDialog extends JDialog {
+public class BuscarOrdenTrabajoDialog extends JDialog {
 
-	class PresupuestosTableModel extends AbstractTableModel {
+	class OrdenesTrabajoTableModel extends AbstractTableModel {
 
 		private static final long serialVersionUID = 1L;
 
-		private List<Presupuesto> presupuestos = new Vector<Presupuesto>();
+		private List<OrdenTrabajo> ordenesTrabajo = new Vector<OrdenTrabajo>();
 
 		public void clear() {
-			int rows = presupuestos.size();
-			presupuestos.clear();
+			int rows = ordenesTrabajo.size();
+			ordenesTrabajo.clear();
 			TableModelEvent event = new TableModelEvent(this, 0, rows,
 					TableModelEvent.ALL_COLUMNS, TableModelEvent.DELETE);
 			for (Object l : listenerList.getListenerList())
@@ -45,10 +46,10 @@ public class BuscarPresupuestoDialog extends JDialog {
 				}
 		}
 
-		public void add(Presupuesto presupuesto) {
-			presupuestos.add(presupuesto);
+		public void add(OrdenTrabajo ordenTrabajo) {
+			ordenesTrabajo.add(ordenTrabajo);
 			TableModelEvent event = new TableModelEvent(this,
-					presupuestos.size() - 1, presupuestos.size() - 1,
+					ordenesTrabajo.size() - 1, ordenesTrabajo.size() - 1,
 					TableModelEvent.ALL_COLUMNS, TableModelEvent.DELETE);
 			for (Object l : listenerList.getListenerList())
 				if (l instanceof TableModelListener) {
@@ -56,9 +57,9 @@ public class BuscarPresupuestoDialog extends JDialog {
 				}
 		}
 
-		public void remove(Presupuesto presupuesto) {
-			int index = presupuestos.indexOf(presupuesto);
-			presupuestos.remove(presupuesto);
+		public void remove(OrdenTrabajo ordenTrabajo) {
+			int index = ordenesTrabajo.indexOf(ordenTrabajo);
+			ordenesTrabajo.remove(ordenTrabajo);
 
 			for (Object l : listenerList.getListenerList())
 				if (l instanceof TableModelListener) {
@@ -68,11 +69,12 @@ public class BuscarPresupuestoDialog extends JDialog {
 				}
 		}
 
-		public Presupuesto getPresupuestoAt(int rowIndex) {
-			return presupuestos.get(rowIndex);
+		public OrdenTrabajo getOrdenTrabajoAt(int rowIndex) {
+			return ordenesTrabajo.get(rowIndex);
 		}
 
-		String[] titulos = { "N\u00FAmero", "Cliente", "Veh\u00EDculo", "Fecha" };
+		String[] titulos = { "N\u00FAmero", "Cliente", "Veh\u00EDculo",
+				"Fecha Inicio", "Estado" };
 
 		@Override
 		public String getColumnName(int column) {
@@ -86,57 +88,60 @@ public class BuscarPresupuestoDialog extends JDialog {
 
 		@Override
 		public int getRowCount() {
-			return presupuestos.size();
+			return ordenesTrabajo.size();
 		}
 
 		@Override
 		public Object getValueAt(int rowIndex, int columnIndex) {
-			Presupuesto presupuesto = presupuestos.get(rowIndex);
+			OrdenTrabajo ordenTrabajo = ordenesTrabajo.get(rowIndex);
 			switch (columnIndex) {
 			case 0:
-				return presupuesto.getNumero();
+				return ordenTrabajo.getNumero();
 			case 1:
-				return presupuesto.getCliente().getNombre();
+				return ordenTrabajo.getPresupuesto().getCliente().getNombre();
 			case 2:
-				return presupuesto.getVehiculo().getPatente();
+				return ordenTrabajo.getPresupuesto().getVehiculo().getPatente();
 			case 3:
-				return presupuesto.getFecha();
+				return ordenTrabajo.getFechaInicio();
+			case 4:
+				return ordenTrabajo.getEstado().toString();
 			}
 			throw new RuntimeException("La columna no existe.");
 		}
 
 		@SuppressWarnings("rawtypes")
 		Class[] columnTypes = new Class[] { Integer.class, String.class,
-				String.class, String.class };
+				String.class, String.class, String.class };
 
 		@SuppressWarnings({ "unchecked", "rawtypes" })
 		public Class getColumnClass(int columnIndex) {
 			return columnTypes[columnIndex];
 		}
 
-		boolean[] columnEditables = new boolean[] { false, false, false, false };
+		boolean[] columnEditables = new boolean[] { false, false, false, false,
+				false };
 
 		public boolean isCellEditable(int row, int column) {
 			return columnEditables[column];
 		}
 
-		public void setPresupuestos(List<Presupuesto> presupuestos) {
+		public void setOrdenesTrabajo(List<OrdenTrabajo> ordenesTrabajo) {
 			clear();
-			for (Presupuesto presupuesto : presupuestos)
-				add(presupuesto);
+			for (OrdenTrabajo ordenTrabajo : ordenesTrabajo)
+				add(ordenTrabajo);
 		}
 
-		public List<Presupuesto> getPresupuestos() {
-			return presupuestos;
+		public List<OrdenTrabajo> getOrdenesTrabajo() {
+			return ordenesTrabajo;
 		}
 	}
 
 	private static final long serialVersionUID = 1L;
 
-	private PresupuestosTableModel presupuestosTableModel;
-	private IPresupuestoPerformer presupuestoPerformer;
+	private OrdenesTrabajoTableModel ordenesTrabajoTableModel;
+	private IOrdenTrabajoPerformer ordenTrabajoPerformer;
 
-	private JTable presupuestosTable;
+	private JTable ordenesTrabajoTable;
 	private JTextField fechaInicioTextField;
 	private JTextField fechaFinTextField;
 	private JPanel filtrosPanel;
@@ -144,15 +149,15 @@ public class BuscarPresupuestoDialog extends JDialog {
 	private JButton fechaInicioHoyButton;
 	private JButton buscarButton;
 
-	public BuscarPresupuestoDialog() {
+	public BuscarOrdenTrabajoDialog() {
 
-		setName("buscarPresupuestoDialog");
+		setName("buscarOrdenTrabajoDialog");
 		setModal(true);
 		setSize(new Dimension(400, 300));
 		setPreferredSize(new Dimension(400, 300));
-		setTitle("Buscar Presupuesto");
+		setTitle("Buscar Orden de Trabajo");
 
-		presupuestosTableModel = new PresupuestosTableModel();
+		ordenesTrabajoTableModel = new OrdenesTrabajoTableModel();
 
 		filtrosPanel = new JPanel();
 		getContentPane().add(filtrosPanel, BorderLayout.NORTH);
@@ -181,10 +186,10 @@ public class BuscarPresupuestoDialog extends JDialog {
 		filtrosPanel.add(buscarButton, "8, 2, 1, 3");
 		buscarButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
-				List<Presupuesto> presupuestos = Sistema.getInstancia()
-						.getPresupuestos(fechaInicioTextField.getText(),
+				List<OrdenTrabajo> ordenesTrabajo = Sistema.getInstancia()
+						.getOrdenesTrabajo(fechaInicioTextField.getText(),
 								fechaFinTextField.getText());
-				presupuestosTableModel.setPresupuestos(presupuestos);
+				ordenesTrabajoTableModel.setOrdenesTrabajo(ordenesTrabajo);
 			}
 		});
 
@@ -204,7 +209,7 @@ public class BuscarPresupuestoDialog extends JDialog {
 		JButton cancelarButton = new JButton("Cancelar");
 		cancelarButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				BuscarPresupuestoDialog.this.dispose();
+				BuscarOrdenTrabajoDialog.this.dispose();
 			}
 		});
 		botonesPanel.add(cancelarButton);
@@ -212,27 +217,30 @@ public class BuscarPresupuestoDialog extends JDialog {
 		JButton aceptarButton = new JButton("Aceptar");
 		aceptarButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				Presupuesto presupuesto = presupuestosTableModel
-						.getPresupuestoAt(presupuestosTable.getSelectedRow());
-				presupuestoPerformer.setPresupuesto(presupuesto);
-
-				BuscarPresupuestoDialog.this.dispose();
+				OrdenTrabajo ordenTrabajo = ordenesTrabajoTableModel
+						.getOrdenTrabajoAt(ordenesTrabajoTable.getSelectedRow());
+				ordenTrabajoPerformer.setOrdenTrabajo(ordenTrabajo);
+				BuscarOrdenTrabajoDialog.this.dispose();
 			}
 
 		});
 		botonesPanel.add(aceptarButton);
 
-		presupuestosTable = new JTable();
-		presupuestosTable.setModel(presupuestosTableModel);
-		getContentPane().add(presupuestosTable, BorderLayout.CENTER);
+		ordenesTrabajoTable = new JTable();
+		ordenesTrabajoTable
+				.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		ordenesTrabajoTable.setFillsViewportHeight(true);
+		ordenesTrabajoTable.setDoubleBuffered(true);
+		getContentPane().add(ordenesTrabajoTable, BorderLayout.CENTER);
+		ordenesTrabajoTable.setModel(ordenesTrabajoTableModel);
 	}
 
-	public void setPresupuestoPerformer(
-			IPresupuestoPerformer presupuestoPerformer) {
-		this.presupuestoPerformer = presupuestoPerformer;
+	public void setOrdenTrabajoPerformer(
+			IOrdenTrabajoPerformer ordenTrabajoPerformer) {
+		this.ordenTrabajoPerformer = ordenTrabajoPerformer;
 	}
 
-	public IPresupuestoPerformer getPresupuestoPerformer() {
-		return this.presupuestoPerformer;
+	public IOrdenTrabajoPerformer getOrdenTrabajoPerformer() {
+		return this.ordenTrabajoPerformer;
 	}
 }
