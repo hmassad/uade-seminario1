@@ -13,6 +13,7 @@ import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
@@ -157,9 +158,11 @@ public class TareasAsignadasDialog extends JDialog {
 	private JLabel fechaFinalLabel;
 	private JButton fechaFinHoyButton;
 	private JButton modificarButton;
-	private JButton cancelarButton;
+	private JButton cerrarButton;
 	private JPanel botonesPanel;
 	private JPanel tablaPanel;
+
+	private JScrollPane scrollPane;
 
 	public TareasAsignadasDialog() {
 		setName("tareasAsignadasDialog");
@@ -231,19 +234,23 @@ public class TareasAsignadasDialog extends JDialog {
 		getContentPane().add(tablaPanel, BorderLayout.CENTER);
 
 		tareasTableModel = new TareasTableModel();
+		tablaPanel.setLayout(new BorderLayout(0, 0));
+
+		scrollPane = new JScrollPane();
+		tablaPanel.add(scrollPane);
+		scrollPane.setViewportView(tareasTable);
 
 		tareasTable = new JTable();
+		tareasTable.setFillsViewportHeight(true);
+		scrollPane.setViewportView(tareasTable);
 		tareasTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		tareasTable.setDoubleBuffered(true);
-		tareasTable.setFillsViewportHeight(true);
-		tablaPanel.setLayout(new BorderLayout(0, 0));
 		tareasTable.setModel(tareasTableModel);
 		tareasTable.getColumnModel().getColumn(0).setResizable(false);
 		tareasTable.getColumnModel().getColumn(1).setPreferredWidth(142);
 		tareasTable.getColumnModel().getColumn(2).setResizable(false);
 		tareasTable.getColumnModel().getColumn(3).setResizable(false);
 		tareasTable.getColumnModel().getColumn(4).setResizable(false);
-		tablaPanel.add(tareasTable);
 		ListSelectionModel rowSM = tareasTable.getSelectionModel();
 		rowSM.addListSelectionListener(new ListSelectionListener() {
 			public void valueChanged(ListSelectionEvent e) {
@@ -260,13 +267,13 @@ public class TareasAsignadasDialog extends JDialog {
 		botonesPanel = new JPanel();
 		getContentPane().add(botonesPanel, BorderLayout.SOUTH);
 
-		cancelarButton = new JButton("Cancelar");
-		cancelarButton.addActionListener(new ActionListener() {
+		cerrarButton = new JButton("Cerrar");
+		cerrarButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				TareasAsignadasDialog.this.dispose();
 			}
 		});
-		botonesPanel.add(cancelarButton);
+		botonesPanel.add(cerrarButton);
 
 		modificarButton = new JButton("Modificar");
 		modificarButton.setEnabled(false);

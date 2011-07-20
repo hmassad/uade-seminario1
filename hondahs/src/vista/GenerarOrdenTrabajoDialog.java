@@ -2,6 +2,7 @@ package vista;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
@@ -11,9 +12,12 @@ import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTable;
-import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
+import javax.swing.SwingConstants;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.AbstractTableModel;
@@ -28,7 +32,6 @@ import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.RowSpec;
 
 import controlador.Sistema;
-import javax.swing.JScrollPane;
 
 public class GenerarOrdenTrabajoDialog extends JDialog implements
 		IPresupuestoPerformer, ITareaPerformer {
@@ -137,7 +140,6 @@ public class GenerarOrdenTrabajoDialog extends JDialog implements
 
 	private JPanel filtrosPanel;
 	private JLabel presupuestoLabel;
-	private JTextField presupuestoTextField;
 	private JButton buscarButton;
 	private JPanel tareasPanel;
 	private JTable tareasTable;
@@ -151,6 +153,14 @@ public class GenerarOrdenTrabajoDialog extends JDialog implements
 	private JButton agregarTareaButton;
 	private JButton eliminarTareaButton;
 	private JScrollPane scrollPane;
+	private JLabel clientePromptLabel;
+	private JLabel vehiculoPromptLabel;
+	private JLabel clienteLabel;
+	private JLabel vehiculoLabel;
+	private JLabel fechaPromptLabel;
+	private JLabel numeroPromptLabel;
+	private JLabel numeroLabel;
+	private JLabel fechaLabel;
 
 	public GenerarOrdenTrabajoDialog() {
 		setName("generarOrdenTrabajoDialog");
@@ -164,30 +174,64 @@ public class GenerarOrdenTrabajoDialog extends JDialog implements
 		filtrosPanel.setLayout(new FormLayout(new ColumnSpec[] {
 				FormFactory.UNRELATED_GAP_COLSPEC, FormFactory.DEFAULT_COLSPEC,
 				FormFactory.LABEL_COMPONENT_GAP_COLSPEC,
-				ColumnSpec.decode("max(89dlu;default):grow"),
-				FormFactory.RELATED_GAP_COLSPEC, FormFactory.BUTTON_COLSPEC,
+				ColumnSpec.decode("default:grow"),
+				FormFactory.RELATED_GAP_COLSPEC, FormFactory.DEFAULT_COLSPEC,
+				FormFactory.RELATED_GAP_COLSPEC,
+				ColumnSpec.decode("default:grow"),
 				FormFactory.UNRELATED_GAP_COLSPEC, }, new RowSpec[] {
 				FormFactory.UNRELATED_GAP_ROWSPEC, FormFactory.DEFAULT_ROWSPEC,
+				FormFactory.RELATED_GAP_ROWSPEC, FormFactory.DEFAULT_ROWSPEC,
+				FormFactory.RELATED_GAP_ROWSPEC, FormFactory.DEFAULT_ROWSPEC,
 				FormFactory.UNRELATED_GAP_ROWSPEC, }));
 
 		presupuestoLabel = new JLabel("Presupuesto");
-		filtrosPanel.add(presupuestoLabel, "2, 2, right, default");
-
-		presupuestoTextField = new JTextField();
-		filtrosPanel.add(presupuestoTextField, "4, 2, fill, default");
-		presupuestoTextField.setColumns(10);
+		presupuestoLabel.setHorizontalAlignment(SwingConstants.LEFT);
+		presupuestoLabel.setFont(new Font("Tahoma", Font.BOLD, 12));
+		filtrosPanel.add(presupuestoLabel, "2, 2, 6, 1, left, default");
 
 		buscarButton = new JButton("Buscar");
-		filtrosPanel.add(buscarButton, "6, 2");
+		filtrosPanel.add(buscarButton, "8, 2, right, default");
+
 		buscarButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				BuscarPresupuestoDialog buscarPresupuestoDialog = new BuscarPresupuestoDialog();
 				buscarPresupuestoDialog
 						.setPresupuestoPerformer(GenerarOrdenTrabajoDialog.this);
 				buscarPresupuestoDialog.setVisible(true);
-				cargarNumeroPresupuesto();
+				actualizarPresupuesto();
 			}
 		});
+
+		numeroPromptLabel = new JLabel("N\u00FAmero");
+		filtrosPanel.add(numeroPromptLabel, "2, 4");
+
+		numeroLabel = new JLabel("No Seleccionado");
+		numeroLabel
+				.setFont(numeroPromptLabel.getFont().deriveFont(Font.ITALIC));
+		filtrosPanel.add(numeroLabel, "4, 4");
+
+		clientePromptLabel = new JLabel("Cliente");
+		filtrosPanel.add(clientePromptLabel, "6, 4");
+
+		clienteLabel = new JLabel("No Seleccionado");
+		clienteLabel.setFont(clientePromptLabel.getFont().deriveFont(
+				Font.ITALIC));
+		filtrosPanel.add(clienteLabel, "8, 4");
+
+		fechaPromptLabel = new JLabel("Fecha");
+		filtrosPanel.add(fechaPromptLabel, "2, 6");
+
+		fechaLabel = new JLabel("No seleccionado");
+		fechaLabel.setFont(fechaPromptLabel.getFont().deriveFont(Font.ITALIC));
+		filtrosPanel.add(fechaLabel, "4, 6");
+
+		vehiculoPromptLabel = new JLabel("Vehículo");
+		filtrosPanel.add(vehiculoPromptLabel, "6, 6");
+
+		vehiculoLabel = new JLabel("No seleccionado");
+		vehiculoLabel.setFont(vehiculoPromptLabel.getFont().deriveFont(
+				Font.ITALIC));
+		filtrosPanel.add(vehiculoLabel, "8, 6");
 
 		tareasPanel = new JPanel();
 		getContentPane().add(tareasPanel, BorderLayout.CENTER);
@@ -207,6 +251,7 @@ public class GenerarOrdenTrabajoDialog extends JDialog implements
 						FormFactory.RELATED_GAP_ROWSPEC, }));
 
 		agregarTareaButton = new JButton("Agregar Tarea");
+		agregarTareaButton.setEnabled(false);
 		agregarTareaButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				AgregarTareaDialog agregarTareaDialog = new AgregarTareaDialog();
@@ -219,6 +264,7 @@ public class GenerarOrdenTrabajoDialog extends JDialog implements
 		tareasButtonsPanel.add(agregarTareaButton, "2, 2, left, top");
 
 		eliminarTareaButton = new JButton("Eliminar Tarea");
+		eliminarTareaButton.setEnabled(false);
 		eliminarTareaButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				Tarea tarea = tareasTableModel.getTareaAt(tareasTable
@@ -228,7 +274,7 @@ public class GenerarOrdenTrabajoDialog extends JDialog implements
 			}
 		});
 		tareasButtonsPanel.add(eliminarTareaButton, "4, 2");
-		
+
 		scrollPane = new JScrollPane();
 		tareasPanel.add(scrollPane, BorderLayout.CENTER);
 
@@ -241,6 +287,17 @@ public class GenerarOrdenTrabajoDialog extends JDialog implements
 		tareasTable.getColumnModel().getColumn(0).setResizable(false);
 		tareasTable.getColumnModel().getColumn(1).setResizable(false);
 		tareasTable.getColumnModel().getColumn(2).setResizable(false);
+		ListSelectionModel rowSM = tareasTable.getSelectionModel();
+		rowSM.addListSelectionListener(new ListSelectionListener() {
+			public void valueChanged(ListSelectionEvent e) {
+				if (e.getValueIsAdjusting())
+					return;
+				ListSelectionModel rowSM = (ListSelectionModel) e.getSource();
+				GenerarOrdenTrabajoDialog.this.eliminarTareaButton
+						.setEnabled(rowSM.getMinSelectionIndex() > -1
+								&& presupuesto != null);
+			}
+		});
 
 		botonesPanel = new JPanel();
 		getContentPane().add(botonesPanel, BorderLayout.SOUTH);
@@ -255,6 +312,7 @@ public class GenerarOrdenTrabajoDialog extends JDialog implements
 
 		aceptarButton = new JButton("Aceptar");
 		botonesPanel.add(aceptarButton);
+		aceptarButton.setEnabled(false);
 		aceptarButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				Sistema.getInstancia().generarOrdenTrabajo(
@@ -267,15 +325,38 @@ public class GenerarOrdenTrabajoDialog extends JDialog implements
 		});
 	}
 
-	/**
-	 * Actualiza el textField con el numero de presupuesto devuelto por el
-	 * buscar presupuesto
-	 */
-	private void cargarNumeroPresupuesto() {
-		if (this.presupuesto != null) {
-			this.presupuestoTextField.setText(this.presupuesto.getNumero()
-					.toString());
+	private void actualizarPresupuesto() {
+		if (presupuesto == null) {
+			numeroLabel.setText("No seleccionado");
+			numeroLabel.setFont(numeroPromptLabel.getFont().deriveFont(
+					Font.ITALIC));
+			fechaLabel.setText("No seleccionado");
+			fechaLabel.setFont(fechaPromptLabel.getFont().deriveFont(
+					Font.ITALIC));
+			clienteLabel.setText("No seleccionado");
+			clienteLabel.setFont(clientePromptLabel.getFont().deriveFont(
+					Font.ITALIC));
+			vehiculoLabel.setText("No seleccionado");
+			vehiculoLabel.setFont(vehiculoPromptLabel.getFont().deriveFont(
+					Font.ITALIC));
+		} else {
+			numeroLabel.setText(this.presupuesto.getNumero().toString());
+			numeroLabel.setFont(numeroPromptLabel.getFont().deriveFont(
+					Font.BOLD));
+			fechaLabel.setText(this.presupuesto.getFecha());
+			fechaLabel
+					.setFont(fechaPromptLabel.getFont().deriveFont(Font.BOLD));
+			clienteLabel.setText(this.presupuesto.getCliente().getNombre());
+			clienteLabel.setFont(clientePromptLabel.getFont().deriveFont(
+					Font.BOLD));
+			vehiculoLabel.setText(this.presupuesto.getVehiculo().getPatente());
+			vehiculoLabel.setFont(vehiculoPromptLabel.getFont().deriveFont(
+					Font.BOLD));
 		}
+
+		buscarButton.setEnabled(presupuesto == null);
+		agregarTareaButton.setEnabled(presupuesto != null);
+		aceptarButton.setEnabled(presupuesto != null);
 	}
 
 	@Override
