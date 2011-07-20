@@ -85,7 +85,11 @@ public class Usuario {
 	public void setClave(String clave) {
 		this.clave = clave;
 	}
-	
+
+	@Override
+	public String toString() {
+		return nombre;
+	}
 	
 
 }

@@ -77,10 +77,10 @@ public class ActualizarOrdenTrabajoDialog extends JDialog implements
 		filtrosPanel.add(buscarButton, "6, 2");
 		buscarButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				BuscarPresupuestoDialog buscarPresupuestoDialog = new BuscarPresupuestoDialog();
+				BuscarPresupuestoDialog buscarPresupuestoDialog = new BuscarPresupuestoDialog(ActualizarOrdenTrabajoDialog.this);
 				buscarPresupuestoDialog.setVisible(true);
-				buscarPresupuestoDialog
-						.setPresupuestoPerformer(ActualizarOrdenTrabajoDialog.this);
+//				buscarPresupuestoDialog
+//						.setPresupuestoPerformer(ActualizarOrdenTrabajoDialog.this);
 			}
 		});
 

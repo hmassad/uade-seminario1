@@ -10,10 +10,11 @@ import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
-import javax.swing.ListSelectionModel;
-import javax.swing.table.DefaultTableModel;
+
+import persistencia.PresupuestoDAO;
 
 import modelo.Presupuesto;
 
@@ -34,7 +35,10 @@ public class BuscarPresupuestoDialog extends JDialog {
 	private JTextField fechaInicioTextField;
 	private JTextField fechaFinTextField;
 
-	public BuscarPresupuestoDialog() {
+	public BuscarPresupuestoDialog(IPresupuestoPerformer presupuestoPerformer) {
+		
+		this.presupuestoPerformer = presupuestoPerformer; 
+		
 		setName("buscarPresupuestoDialog");
 		setModal(true);
 		setSize(new Dimension(400, 300));
@@ -92,45 +96,6 @@ public class BuscarPresupuestoDialog extends JDialog {
 		JButton fechaFinHoyButton = new JButton("hoy");
 		filtrosPanel.add(fechaFinHoyButton, "6, 4");
 
-		JPanel tablaPanel = new JPanel();
-		getContentPane().add(tablaPanel, BorderLayout.CENTER);
-
-		presupuestosTable = new JTable();
-		presupuestosTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		presupuestosTable.setDoubleBuffered(true);
-		presupuestosTable.setFillsViewportHeight(true);
-		presupuestosTable.setModel(new DefaultTableModel(new Object[][] {
-				{ null, null, null, null }, { null, null, null, null },
-				{ null, null, null, null }, { null, null, null, null },
-				{ null, null, null, null }, { null, null, null, null },
-				{ null, null, null, null }, }, new String[] { "N\u00FAmero",
-				"Cliente", "Veh\u00EDculo", "Fecha" }) {
-			private static final long serialVersionUID = 1L;
-
-			@SuppressWarnings("rawtypes")
-			Class[] columnTypes = new Class[] { Integer.class, String.class,
-					String.class, Object.class };
-
-			@SuppressWarnings({ "unchecked", "rawtypes" })
-			public Class getColumnClass(int columnIndex) {
-				return columnTypes[columnIndex];
-			}
-
-			boolean[] columnEditables = new boolean[] { true, false, false,
-					false };
-
-			public boolean isCellEditable(int row, int column) {
-				return columnEditables[column];
-			}
-		});
-		presupuestosTable.getColumnModel().getColumn(0).setResizable(false);
-		presupuestosTable.getColumnModel().getColumn(2).setResizable(false);
-		presupuestosTable.getColumnModel().getColumn(3).setResizable(false);
-		presupuestosTable.getColumnModel().getColumn(3).setMinWidth(75);
-		presupuestosTable.getColumnModel().getColumn(3).setMaxWidth(75);
-		tablaPanel.setLayout(new BorderLayout(0, 0));
-		tablaPanel.add(presupuestosTable);
-
 		JPanel botonesPanel = new JPanel();
 		getContentPane().add(botonesPanel, BorderLayout.SOUTH);
 
@@ -145,13 +110,17 @@ public class BuscarPresupuestoDialog extends JDialog {
 		JButton aceptarButton = new JButton("Aceptar");
 		aceptarButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				if (presupuestoPerformer != null) {
-					// TODO: Obtener el presupuesto seleccionado
-					Presupuesto presupuesto = null;
-					presupuestoPerformer.setPresupuesto(presupuesto);
-				}
+			    
+				int selectedRow = presupuestosTable.getSelectedRow();
+				Integer numeroPresupuesto = (Integer) presupuestosTable.getValueAt(selectedRow, 0);
+			
+				Presupuesto presupuesto = PresupuestoDAO.getInstancia().select(numeroPresupuesto);
+				if(presupuesto!=null)
+				retornarAGenerarOrdenDeTrabajo(presupuesto);
+					
 				BuscarPresupuestoDialog.this.dispose();
 			}
+
 		});
 		botonesPanel.add(aceptarButton);
 	}
@@ -180,21 +149,28 @@ public class BuscarPresupuestoDialog extends JDialog {
 			i++;
 		}
         
-        String[] columnNames = {"Presupuesto",
-                "Fecha",
-                "Cliente",
-                "Vehiculo"};
+        String[] columnNames = {"N\u00FAmero","Cliente", "Veh\u00EDculo", "Fecha"};
         
         presupuestosTable = new JTable(data, columnNames);
-        presupuestosTable.setPreferredScrollableViewportSize(new Dimension(450,300));
+        presupuestosTable.setPreferredScrollableViewportSize(new Dimension(200,200));
         presupuestosTable.setFillsViewportHeight(true);
         
-       /* //Create the scroll pane and add the table to it.
+        //Create the scroll pane and add the table to it.
         JScrollPane scrollPane = new JScrollPane(presupuestosTable);
         
         //Add the scroll pane to this panel.
         add(scrollPane);
-        scrollPane.setBounds(0, 0, 100, 100);*/
+        scrollPane.setBounds(0, 90, 370, 130);
+        
+        getContentPane().add(scrollPane);
+        repaint();
+	}
+	
+	private void retornarAGenerarOrdenDeTrabajo(Presupuesto presupuesto) {
+		
+		if(this.presupuestoPerformer!=null){
+			this.presupuestoPerformer.setPresupuesto(presupuesto);	
+		}
 		
 	}
 }
