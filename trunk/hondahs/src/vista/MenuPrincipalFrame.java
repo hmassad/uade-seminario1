@@ -20,25 +20,22 @@ public class MenuPrincipalFrame extends JFrame implements ILoginPerformer {
 
 	private static final long serialVersionUID = 1L;
 
-	private static int maxIntentosFallidos = 3;
-
 	public static void main(String[] args) throws ClassNotFoundException,
 			InstantiationException, IllegalAccessException,
 			UnsupportedLookAndFeelException {
 		UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 		MenuPrincipalFrame mp = new MenuPrincipalFrame();
-		int i = 0;
-		while (mp.getUsuario() == null && i < maxIntentosFallidos) {
-			LoginDialog loginDialog = new LoginDialog();
-			loginDialog.setLoginPerformer(mp);
-			loginDialog.setVisible(true);
-			i++;
-		}
-		if (i >= maxIntentosFallidos) {
+
+		LoginDialog loginDialog = new LoginDialog();
+		loginDialog.setLoginPerformer(mp);
+		loginDialog.setLocation(200, 200);
+		loginDialog.setVisible(true);
+
+		if (mp.getUsuario() == null) {
 			JOptionPane
 					.showMessageDialog(
 							mp,
-							"Se alcanzó el tope de intentos fallidos. La aplicación se cerrará.",
+							"El usuario o la contraseña son incorrectos.",
 							"Error de Usuario y/o Contraseña",
 							JOptionPane.ERROR_MESSAGE);
 			return;
