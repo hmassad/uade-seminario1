@@ -1,7 +1,6 @@
 package vista;
 
 import java.awt.BorderLayout;
-import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
@@ -11,6 +10,7 @@ import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
@@ -26,76 +26,10 @@ import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.RowSpec;
 
 import controlador.Sistema;
+import java.awt.Dimension;
 
 public class GenerarOrdenTrabajoDialog extends JDialog implements
 		IPresupuestoPerformer, ITareaPerformer {
-
-	class TareasTableModel extends DefaultTableModel {
-
-		private static final long serialVersionUID = 1L;
-
-		private String[] titulos = new String[] { "N\u00FAmero", "Tarea",
-				"Operario" };
-
-		private List<Tarea> tareas;
-
-		public TareasTableModel() {
-			tareas = new Vector<Tarea>();
-		}
-
-		@SuppressWarnings("rawtypes")
-		Class[] columnTypes = new Class[] { Integer.class, String.class,
-				String.class };
-
-		@SuppressWarnings({ "unchecked", "rawtypes" })
-		public Class getColumnClass(int columnIndex) {
-			return columnTypes[columnIndex];
-		}
-
-		boolean[] columnEditables = new boolean[] { false, false, false };
-
-		public boolean isCellEditable(int row, int column) {
-			return columnEditables[column];
-		}
-
-		public int getColumnCount() {
-			return titulos.length;
-		}
-
-		public Tarea getTarea(int i) {
-			return tareas.get(i);
-		}
-
-		public void add(Tarea tarea) {
-			this.tareas.add(tarea);
-			super.addRow(new Object[] { tarea.getNumero(),
-					tarea.getTipoTarea().toString(),
-					tarea.getUsuario().getNombre() });
-		}
-
-		public void remove(Tarea tarea) {
-			int i = tareas.indexOf(tarea);
-			this.tareas.remove(i);
-			super.removeRow(i);
-		}
-
-		public boolean contains(Tarea tarea) {
-			return tareas.indexOf(tarea) != -1;
-		}
-
-		public List<Tarea> getTareas() {
-			return this.tareas;
-		}
-
-		public void setTareas(List<Tarea> tareas) {
-			for (Tarea tarea : this.tareas) {
-				remove(tarea);
-			}
-			for (Tarea tarea : tareas) {
-				add(tarea);
-			}
-		}
-	}
 
 	private static final long serialVersionUID = 1L;
 
@@ -110,6 +44,7 @@ public class GenerarOrdenTrabajoDialog extends JDialog implements
 	private JButton aceptarButton;
 
 	private Presupuesto presupuesto;
+	private List<Tarea> tareas;
 	private JPanel tareasButtonsPanel;
 	private JButton agregarTareaButton;
 	private JButton eliminarTareaButton;
@@ -143,28 +78,50 @@ public class GenerarOrdenTrabajoDialog extends JDialog implements
 		filtrosPanel.add(buscarButton, "6, 2");
 		buscarButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				BuscarPresupuestoDialog buscarPresupuestoDialog = new BuscarPresupuestoDialog();
+				BuscarPresupuestoDialog buscarPresupuestoDialog = new BuscarPresupuestoDialog(GenerarOrdenTrabajoDialog.this);
 				buscarPresupuestoDialog.setVisible(true);
-				buscarPresupuestoDialog
-						.setPresupuestoPerformer(GenerarOrdenTrabajoDialog.this);
+				cargarNumeroPresupuesto();
 			}
 		});
 
 		tareasPanel = new JPanel();
 		getContentPane().add(tareasPanel, BorderLayout.CENTER);
 
-		tareasTable = new JTable();
+		/*tareasTable = new JTable();
 		tareasTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		tareasTable.setDoubleBuffered(true);
 		tareasTable.setFillsViewportHeight(true);
-		tareasTable.setModel(new TareasTableModel());
+		tareasTable.setModel(new DefaultTableModel(new Object[][] {
+				{ null, null, null, null }, { null, null, null, null },
+				{ null, null, null, null }, { null, null, null, null },
+				{ null, null, null, null }, { null, null, null, null },
+				{ null, null, null, null }, }, new String[] { "N\u00FAmero",
+				"Cliente", "Veh\u00EDculo", "Fecha" }) {
+			private static final long serialVersionUID = 1L;
+
+			@SuppressWarnings("rawtypes")
+			Class[] columnTypes = new Class[] { Integer.class, String.class,
+					String.class, Object.class };
+
+			@SuppressWarnings({ "unchecked", "rawtypes" })
+			public Class getColumnClass(int columnIndex) {
+				return columnTypes[columnIndex];
+			}
+
+			boolean[] columnEditables = new boolean[] { true, false, false,
+					false };
+
+			public boolean isCellEditable(int row, int column) {
+				return columnEditables[column];
+			}
+		});
 		tareasTable.getColumnModel().getColumn(0).setResizable(false);
 		tareasTable.getColumnModel().getColumn(2).setResizable(false);
 		tareasTable.getColumnModel().getColumn(3).setResizable(false);
 		tareasTable.getColumnModel().getColumn(3).setMinWidth(75);
 		tareasTable.getColumnModel().getColumn(3).setMaxWidth(75);
 		tareasPanel.setLayout(new BorderLayout(0, 0));
-		tareasPanel.add(tareasTable);
+		tareasPanel.add(tareasTable);*/
 
 		tareasButtonsPanel = new JPanel();
 		tareasPanel.add(tareasButtonsPanel, BorderLayout.NORTH);
@@ -184,6 +141,7 @@ public class GenerarOrdenTrabajoDialog extends JDialog implements
 				agregarTareaDialog
 						.setTareaPerformer(GenerarOrdenTrabajoDialog.this);
 				agregarTareaDialog.setVisible(true);
+				
 			}
 		});
 		tareasButtonsPanel.add(agregarTareaButton, "2, 2, left, top");
@@ -191,11 +149,8 @@ public class GenerarOrdenTrabajoDialog extends JDialog implements
 		eliminarTareaButton = new JButton("Eliminar Tarea");
 		eliminarTareaButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				TareasTableModel tareasTableModel = (TareasTableModel) GenerarOrdenTrabajoDialog.this.tareasTable
-						.getModel();
-				Tarea tarea = tareasTableModel
-						.getTarea(GenerarOrdenTrabajoDialog.this.tareasTable
-								.getSelectedRow());
+				// TODO obtener la tarea seleccionada
+				Tarea tarea = null;
 				if (tarea != null)
 					GenerarOrdenTrabajoDialog.this.removeTarea(tarea);
 			}
@@ -225,6 +180,49 @@ public class GenerarOrdenTrabajoDialog extends JDialog implements
 				GenerarOrdenTrabajoDialog.this.dispose();
 			}
 		});
+
+		tareas = new Vector<Tarea>();
+	}
+
+	/**
+	 * Actualiza el textField con el numero de presupuesto devuelto por el buscar presupuesto
+	 */
+	private void cargarNumeroPresupuesto() {
+		if(this.presupuesto!=null){
+			this.presupuestoTextField.setText(this.presupuesto.getNumero().toString());
+		}
+		
+	}
+	
+	protected void updateTareasTable() {
+				
+		Object[][] data = new Object[this.tareas.size()][4];
+        int i = 0;
+        
+        for (Tarea tarea : this.tareas) {
+        	data[i][0] = tarea.getNumero();
+			data[i][1] = tarea.getUsuario().getNombre();
+			data[i][2] = tarea.getEstado().getCode();
+			data[i][3] = tarea.getTipoTarea().getDescripcion();
+			i++;
+		}
+        
+        String[] columnNames = {"N\u00FAmero","Operario", "Estado", "Descripcion"};
+        
+        try{
+        	tareasTable.removeAll();
+        	tareasPanel.remove(tareasTable);
+        }catch(Exception e){}
+        
+        tareasTable = new JTable(data, columnNames);
+        tareasTable.setPreferredScrollableViewportSize(new Dimension(200,200));
+        tareasTable.setFillsViewportHeight(true);
+        
+        //Create the scroll pane and add the table to it.
+        JScrollPane scrollPane = new JScrollPane(tareasTable);
+        scrollPane.setBounds(0, 50, 370, 130);
+        tareasPanel.add(scrollPane);
+        repaint();
 	}
 
 	@Override
@@ -238,30 +236,24 @@ public class GenerarOrdenTrabajoDialog extends JDialog implements
 	}
 
 	public void setTareas(List<Tarea> tareas) {
-		TareasTableModel tareasTableModel = (TareasTableModel) tareasTable
-				.getModel();
-		tareasTableModel.setTareas(tareas);
+		this.tareas = tareas;
 	}
 
 	public List<Tarea> getTareas() {
-		TareasTableModel tareasTableModel = (TareasTableModel) tareasTable
-				.getModel();
-		return tareasTableModel.getTareas();
+		return tareas;
 	}
-
+	
 	@Override
 	public void addTarea(Tarea tarea) {
-		TareasTableModel tareasTableModel = (TareasTableModel) tareasTable
-				.getModel();
-		tareasTableModel.add(tarea);
+		this.tareas.add(tarea);
+		updateTareasTable();
 	}
 
 	@Override
 	public void removeTarea(Tarea tarea) {
-		TareasTableModel tareasTableModel = (TareasTableModel) tareasTable
-				.getModel();
-		if (tareasTableModel.contains(tarea)) {
-			tareasTableModel.remove(tarea);
+		if (this.tareas.contains(tarea)) {
+			this.tareas.remove(tarea);
+			updateTareasTable();
 		}
 	}
 }

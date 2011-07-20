@@ -24,6 +24,8 @@ import com.jgoodies.forms.layout.RowSpec;
 import controlador.Sistema;
 
 import java.awt.Dimension;
+import java.util.List;
+import java.util.Vector;
 
 public class AgregarTareaDialog extends JDialog {
 
@@ -61,18 +63,26 @@ public class AgregarTareaDialog extends JDialog {
 
 		tareaLabel = new JLabel("Tarea");
 		contentPanel.add(tareaLabel, "3, 2, right, default");
-
+		
 		tiposTareaComboBox = new JComboBox();
 		contentPanel.add(tiposTareaComboBox, "5, 2, fill, default");
-
+		Vector<TipoTarea> tiposTareas = new Vector<TipoTarea>(); 
+		for (TipoTarea tipoTarea : Sistema.getInstancia().getTiposDeTareas()) {
+			tiposTareas.add(tipoTarea);
+		}
+		tiposTareaComboBox.setModel(new DefaultComboBoxModel(tiposTareas));
+		
+		
 		operarioLabel = new JLabel("Operario");
 		contentPanel.add(operarioLabel, "3, 4, right, default");
 
 		operariosComboBox = new JComboBox();
 		contentPanel.add(operariosComboBox, "5, 4, fill, default");
-		operariosComboBox.setModel(new DefaultComboBoxModel(
-			Sistema.getInstancia().getOperarios()
-		));
+		Vector<Usuario> operarios = new Vector<Usuario>(); 
+		for (Usuario usuario : Sistema.getInstancia().getOperarios()) {
+			operarios.add(usuario);
+		}
+		operariosComboBox.setModel(new DefaultComboBoxModel(operarios));
 
 		botonesPanel = new JPanel();
 		getContentPane().add(botonesPanel, BorderLayout.SOUTH);

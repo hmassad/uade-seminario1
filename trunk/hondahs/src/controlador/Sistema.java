@@ -1,5 +1,6 @@
 package controlador;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
@@ -65,15 +66,26 @@ public class Sistema {
 		return null;
 	}
 
-	public Usuario[] getOperarios() {
-		List<Usuario> operarios = new Vector<Usuario>();
+	/**
+	 * Obtiene los usuarios con perfil operario.
+	 * @return usuario operario.
+	 */
+	public List<Usuario> getOperarios() {
+		List<Usuario> operarios = new ArrayList<Usuario>();
 		for (Usuario usuario : UsuarioDAO.getInstancia().selectAll()) {
-			if (usuario.getTipoUsuario().getCode().equals(TipoUsuario.OPERARIO))
+			if (usuario.getTipoUsuario().equals(TipoUsuario.OPERARIO))
 				operarios.add(usuario);
 		}
-		return (Usuario[]) operarios.toArray();
+		if(operarios.size()>0){
+			return operarios;
+		}else{
+			return null;
+		}
 	}
 	
+	public List<TipoTarea> getTiposDeTareas() {
+		return TipoTareaDAO.getInstancia().selectAll();
+	}
 	
 	public void crearOrdenDeTrabajo(int numeroPresupuesto,String fechaInicio, String fechaFin, String estado,
 			List<Tarea> listaTareas){
@@ -104,6 +116,7 @@ public class Sistema {
 	public void getDatosInforme(){
 	}
 	
+	
 	/**
 	 * Busca los presupuestos con fecha entre fechaInicio y fechaFin
 	 * @param fechaInicio de la busqueda.
@@ -111,10 +124,13 @@ public class Sistema {
 	 * @return List<Presupuesto> de presupuestos encontrados.
 	 */
 	public List<Presupuesto> getPresupuestos(String fechaInicio,String fechaFin){
-		//return PresupuestoDAO.getInstancia().selectAllByDates(fechaInicio, fechaFin);
 		
-		return PresupuestoDAO.getInstancia().selectAll();
+		if(fechaInicio.equals("") && fechaFin.equals("")){
+			return PresupuestoDAO.getInstancia().selectAll();
+		}
+		return PresupuestoDAO.getInstancia().selectAllByDates(fechaInicio, fechaFin);
 	}
+	
 	
 	public void CrearTarea(String descripcionTipoTarea, String estadoTarea, String fechaFin){
 		

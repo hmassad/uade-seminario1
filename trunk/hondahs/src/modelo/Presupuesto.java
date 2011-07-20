@@ -6,6 +6,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
@@ -21,8 +22,8 @@ public class Presupuesto {
 	@Column(name="fecha",nullable=false)
 	private String fecha;
 	
-	@OneToOne
-	@JoinColumn(name="numero")
+	@ManyToOne
+	@JoinColumn(name="idCliente")
 	private Cliente cliente;
 	
 	@OneToOne
