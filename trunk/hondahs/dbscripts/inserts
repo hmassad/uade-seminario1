@@ -51,7 +51,7 @@ insert into hondahs.presupuesto(fecha,idCliente,idVehiculo) values ("16/02/2011"
 insert into hondahs.presupuesto(fecha,idCliente,idVehiculo) values ("16/02/2011",4,14);
 insert into hondahs.presupuesto(fecha,idCliente,idVehiculo) values ("16/02/2011",5,15);
 
-/* insert de presupuesto */
+/* insert de tipo tarea */
 insert into hondahs.tipotarea(numero,descripcion) values (1,"Motor: Nivel");
 insert into hondahs.tipotarea(numero,descripcion) values (2,"Motor: Cambio de Aceite");
 insert into hondahs.tipotarea(numero,descripcion) values (3,"Filtro: Cambio");
