@@ -85,45 +85,12 @@ public class Sistema {
 	public List<TipoTarea> getTiposDeTareas() {
 		return TipoTareaDAO.getInstancia().selectAll();
 	}
-
-	public void crearOrdenDeTrabajo(int numeroPresupuesto, String fechaInicio,
-			String fechaFin, String estado, List<Tarea> listaTareas) {
-
-		// se obtiene el presupuesto
-		Presupuesto presupuesto = PresupuestoDAO.getInstancia().select(
-				numeroPresupuesto);
-
-		// Se crea la orden de trabajo
-		OrdenTrabajo ot = new OrdenTrabajo(presupuesto, fechaInicio, fechaFin,
-				EstadoOrdenTrabajo.fromCode(estado), listaTareas);
-
-		// se inserta en la base de datos
-		OrdenTrabajoDAO.getInstancia().insert(ot);
-	}
-
-	public void actualizarOrdenDeTrabajo(int numeroOrdenTrabajo, String estado) {
-
-		// se busca la ot
-		OrdenTrabajo ot = OrdenTrabajoDAO.getInstancia().select(
-				numeroOrdenTrabajo);
-
-		// se actualiza la ot
-		ot.setEstado(EstadoOrdenTrabajo.fromCode(estado));
-
-		// se guarda la actualizacion en la base de datos
-		OrdenTrabajoDAO.getInstancia().update(ot);
-	}
-
-	public void getDatosInforme() {
-	}
-
+	
 	/**
 	 * Busca los presupuestos con fecha entre fechaInicio y fechaFin
 	 * 
-	 * @param fechaInicio
-	 *            de la busqueda.
-	 * @param fechaFin
-	 *            de la busqueda.
+	 * @param fechaInicio de la busqueda.
+	 * @param fechaFin de la busqueda.
 	 * @return List<Presupuesto> de presupuestos encontrados.
 	 */
 	public List<Presupuesto> getPresupuestos(String fechaInicio, String fechaFin) {
@@ -135,39 +102,67 @@ public class Sistema {
 				fechaFin);
 	}
 
-	public void CrearTarea(String descripcionTipoTarea, String estadoTarea,
-			String fechaFin) {
-
-		// Se obtiene el tipo de tarea seleccionado.
-		TipoTarea tipoTarea = TipoTareaDAO.getInstancia().select(
-				descripcionTipoTarea);
-
-		// Se obtiene el estado seleccionado.
-		TipoTarea estado = TipoTareaDAO.getInstancia().select(estadoTarea);
-
-		// Se crea la tarea.
-		// Tarea tarea = new
-		// Tarea(tipoTarea,estado,fechaFin,this.usuarioLogeado);
-
-		// Se inserta la tarea en la base.
-		// TareaDAO.getInstancia().insert(tarea);
-
-	}
-
+	/*-------------------------------------------------------------------------*/
+	/*---------------------  GENERAR ORDEN DE TRABAJO -------------------------*/
+	/*-------------------------------------------------------------------------*/
 	public OrdenTrabajo generarOrdenTrabajo(Presupuesto presupuesto,
 			String fechaInicio, String fechaFin, EstadoOrdenTrabajo estado,
 			List<Tarea> listaTareas) {
+		
 		OrdenTrabajo ordenTrabajo = new OrdenTrabajo(presupuesto, fechaInicio,
 				fechaFin, estado, listaTareas);
+		
+		for (Tarea tarea : listaTareas) {
+			tarea.setOrdenTrabajo(ordenTrabajo);
+		}
 
 		OrdenTrabajoDAO.getInstancia().insert(ordenTrabajo);
 		return ordenTrabajo;
 	}
+	
+	/*-------------------------------------------------------------------------*/
+	/*--------------------- ACTUALIZAR ORDEN DE TRABAJO -----------------------*/
+	/*-------------------------------------------------------------------------*/
+	/**
+	 * Retorna la lista de ordenes de trabajo que esten entre la fecha 
+	 * de inico y fin pasadas
+	 */
+	@SuppressWarnings("unused")
+	public List<OrdenTrabajo> getOrdenesTrabajo(String fechaInicio,
+			String fechaFin) {
+		
+		List<OrdenTrabajo> ordenesTrabajo = OrdenTrabajoDAO.getInstancia()
+		.selectAll();
+		for (OrdenTrabajo ordenTrabajo : ordenesTrabajo) {
+			// TODO comparar fechas o arreglar el DAO
+			if (false)
+				ordenesTrabajo.remove(ordenTrabajo);
+		}
+		return ordenesTrabajo;
+	}
+	
+	public void actualizarOrdenDeTrabajo(OrdenTrabajo ordenTrabajo,
+			List<Tarea> listaTareas){
+		
+		//Borro las tareas anteriores que tenia la orden de trabajo
+		for (Tarea tarea : ordenTrabajo.getListaTareas()) {
+			TareaDAO.getInstancia().delete(tarea);
+		}
+		
+		//Guardo la lista actualizada de tareas
+		for (Tarea tarea : listaTareas) {
+			tarea.setOrdenTrabajo(ordenTrabajo);
+			TareaDAO.getInstancia().insert(tarea);
+		}
+		
+	}
 
 	public void agregarTarea(OrdenTrabajo ordenTrabajo, TipoTarea tipoTarea,
 			Usuario operario) {
+		
 		ordenTrabajo.getListaTareas().add(
-				new Tarea(tipoTarea, EstadoTarea.ASIGNADA, null, operario));
+				new Tarea(tipoTarea, EstadoTarea.ASIGNADA, null, operario,
+						new java.util.Date().toString(),ordenTrabajo));
 		OrdenTrabajoDAO.getInstancia().update(ordenTrabajo);
 	}
 
@@ -184,17 +179,14 @@ public class Sistema {
 		}
 		return tareas.toArray(new Tarea[0]);
 	}
+	
+	/*-------------------------------------------------------------------------*/
+	/*--------------------- GENERAR INFORME DE OTs ----------------------------*/
+	/*-------------------------------------------------------------------------*/
+	
+	/*-------------------------------------------------------------------------*/
+	/*--------------------- ACTUALIZAR ESTADO DE TAREA ------------------------*/
+	/*-------------------------------------------------------------------------*/
 
-	public List<OrdenTrabajo> getOrdenesTrabajo(String fechaInicio,
-			String fechaFin) {
-		List<OrdenTrabajo> ordenesTrabajo = OrdenTrabajoDAO.getInstancia()
-				.selectAll();
-		for (OrdenTrabajo ordenTrabajo : ordenesTrabajo) {
-			// TODO comparar fechas o arreglar el DAO
-			if (false)
-				ordenesTrabajo.remove(ordenTrabajo);
-		}
-		return ordenesTrabajo;
-	}
 
 }

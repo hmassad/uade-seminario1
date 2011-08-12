@@ -1,8 +1,10 @@
 package vista;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Vector;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
@@ -22,10 +24,6 @@ import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.RowSpec;
 
 import controlador.Sistema;
-
-import java.awt.Dimension;
-import java.util.List;
-import java.util.Vector;
 
 public class AgregarTareaDialog extends JDialog {
 
@@ -99,14 +97,13 @@ public class AgregarTareaDialog extends JDialog {
 		aceptarButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				if (tareaPerformer != null) {
-					tareaPerformer
-							.addTarea(new Tarea(
-									(TipoTarea) AgregarTareaDialog.this.tiposTareaComboBox
-											.getSelectedItem(),
-									EstadoTarea.ASIGNADA,
-									null,
-									(Usuario) AgregarTareaDialog.this.operariosComboBox
-											.getSelectedItem()));
+					tareaPerformer.addTarea(new Tarea(
+						(TipoTarea) AgregarTareaDialog.this.tiposTareaComboBox.getSelectedItem(),
+						EstadoTarea.ASIGNADA,
+						null,
+						(Usuario) AgregarTareaDialog.this.operariosComboBox.getSelectedItem(),
+						new java.util.Date().toString(),
+						null));
 				}
 				AgregarTareaDialog.this.dispose();
 			}

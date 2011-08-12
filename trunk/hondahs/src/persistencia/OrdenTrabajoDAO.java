@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import modelo.OrdenTrabajo;
+import modelo.Tarea;
 
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
@@ -75,7 +76,7 @@ public class OrdenTrabajoDAO {
 		Session session = SessionFactoryUtil.getInstance().getCurrentSession();
 		try {
 			tx = session.beginTransaction();
-			session.update(o);
+			session.saveOrUpdate(o);
 			tx.commit();
 		} catch (RuntimeException e) {
 			if (tx != null && tx.isActive()) {
@@ -85,7 +86,7 @@ public class OrdenTrabajoDAO {
 				} catch (HibernateException e1) {
 					logger.debug("Error rolling back transaction");
 				}
-				throw new RuntimeException("Error: Imposible actualizar el ordenTrabajo.\n" +
+				throw new RuntimeException("Error: Imposible actualizar la ordenTrabajo.\n" +
 						"detalles del error[ "+e.getMessage()+"]");
 			}
 		}
@@ -134,6 +135,15 @@ public class OrdenTrabajoDAO {
 			
 			tx = session.beginTransaction();
 			ordenes = session.createCriteria(OrdenTrabajo.class).list();
+			/*
+			 * Recorro la lista de tareas para que el lazy de hibernate
+			 * traiga las tareas de la orden de trabajo
+			 */
+			for (OrdenTrabajo ordenTrabajo : ordenes) {
+				for (Tarea t : ordenTrabajo.getListaTareas()) {
+					t.getEstado();
+				}
+			}
 			tx.commit();
 			
 		} catch (RuntimeException e) {
