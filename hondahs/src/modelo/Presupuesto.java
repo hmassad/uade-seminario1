@@ -27,7 +27,7 @@ public class Presupuesto {
 	private Cliente cliente;
 	
 	@OneToOne
-	@JoinColumn(name="numero")
+	@JoinColumn(name="idVehiculo", nullable = false)
 	private Vehiculo vehiculo;
 
 	public Presupuesto() {

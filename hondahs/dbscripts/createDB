@@ -36,8 +36,9 @@ CREATE TABLE hondahs.tarea (
   `numero` int(11) NOT NULL AUTO_INCREMENT,
   `tipoTarea` int(11) NOT NULL,
   `estado` varchar(45) NOT NULL,
-  `fechaFin` varchar(45) NOT NULL,
+  `fechaFin` varchar(45),
   `usuario` int(11) NOT NULL,
+  `ordentrabajo` int(11) NOT NULL,
   PRIMARY KEY (`numero`),
   KEY `tipoTareaFK` (`tipoTarea`),
   KEY `estadoTareaFK` (`estado`),
@@ -45,7 +46,9 @@ CREATE TABLE hondahs.tarea (
   CONSTRAINT `tipoTareaFK` FOREIGN KEY (`tipoTarea`) 
   REFERENCES `tipotarea` (`numero`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `usuarioTareaFK` FOREIGN KEY (`usuario`) 
-  REFERENCES `usuario` (`numero`) ON DELETE NO ACTION ON UPDATE NO ACTION
+  REFERENCES `usuario` (`numero`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `ordenTrabajoTareaFK` FOREIGN KEY (`ordentrabajo` )
+  REFERENCES `ordentrabajo` (`numero` ) ON DELETE NO ACTION ON UPDATE NO ACTION
 );
 
 CREATE TABLE hondahs.pedidomateriales (
@@ -97,7 +100,7 @@ CREATE TABLE hondahs.ordentrabajo (
   `numero` int(11) NOT NULL AUTO_INCREMENT,
   `idPresupuesto` int(11) NOT NULL,
   `fechaInicio` varchar(45) NOT NULL,
-  `fechaFin` varchar(45) NOT NULL,
+  `fechaFin` varchar(45),
   `estado` varchar(45) NOT NULL,
   PRIMARY KEY (`numero`),
   KEY `ordenTrabajoPresupuestoFK` (`idPresupuesto`),

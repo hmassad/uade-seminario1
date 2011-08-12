@@ -3,8 +3,12 @@ package modelo;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -23,7 +27,7 @@ public class OrdenTrabajo {
 	private Integer numero;
 
 	@OneToOne
-	@JoinColumn(name = "numero")
+	@JoinColumn(name = "idPresupuesto")
 	private Presupuesto presupuesto;
 
 	@Column(name = "fechaInicio", nullable = false)
@@ -32,11 +36,12 @@ public class OrdenTrabajo {
 	@Column(name = "fechaFin", nullable = true)
 	private String fechaFin;
 
-	@Column(name = "estado", nullable = false)
+	@Enumerated(EnumType.STRING) 
+	@Column(name="estado")
 	private EstadoOrdenTrabajo estado;
 
-	@OneToMany
-	@JoinColumn(name = "numero")
+	@OneToMany(mappedBy = "ordenTrabajo", fetch = FetchType.LAZY, 
+			cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Tarea> listaTareas;
 
 	public OrdenTrabajo() {

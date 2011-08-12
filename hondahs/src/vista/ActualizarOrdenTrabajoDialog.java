@@ -19,9 +19,7 @@ import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.AbstractTableModel;
 
-import modelo.EstadoOrdenTrabajo;
 import modelo.OrdenTrabajo;
-import modelo.Presupuesto;
 import modelo.Tarea;
 
 import com.jgoodies.forms.factories.FormFactory;
@@ -138,8 +136,8 @@ public class ActualizarOrdenTrabajoDialog extends JDialog implements
 	private static final long serialVersionUID = 1L;
 
 	private JPanel filtrosPanel;
-	private JLabel presupuestoLabel;
-	private JTextField presupuestoTextField;
+	private JLabel ordenDeTrabajoLabel;
+	private JTextField ordenDeTrabajoTextField;
 	private JButton buscarButton;
 	private JPanel tareasPanel;
 	private JScrollPane scrollPane;
@@ -174,12 +172,12 @@ public class ActualizarOrdenTrabajoDialog extends JDialog implements
 				FormFactory.UNRELATED_GAP_ROWSPEC, FormFactory.DEFAULT_ROWSPEC,
 				FormFactory.UNRELATED_GAP_ROWSPEC, }));
 
-		presupuestoLabel = new JLabel("Orden de Trabajo");
-		filtrosPanel.add(presupuestoLabel, "2, 2, right, default");
+		ordenDeTrabajoLabel = new JLabel("Orden de Trabajo");
+		filtrosPanel.add(ordenDeTrabajoLabel, "2, 2, right, default");
 
-		presupuestoTextField = new JTextField();
-		filtrosPanel.add(presupuestoTextField, "4, 2, fill, default");
-		presupuestoTextField.setColumns(10);
+		ordenDeTrabajoTextField = new JTextField();
+		filtrosPanel.add(ordenDeTrabajoTextField, "4, 2, fill, default");
+		ordenDeTrabajoTextField.setColumns(10);
 
 		buscarButton = new JButton("Buscar");
 		filtrosPanel.add(buscarButton, "6, 2");
@@ -190,6 +188,7 @@ public class ActualizarOrdenTrabajoDialog extends JDialog implements
 						.setOrdenTrabajoPerformer(ActualizarOrdenTrabajoDialog.this);
 				buscarOrdenTrabajoDialog.setVisible(true);
 				actualizarOrdenTrabajo();
+				actualizarTablaTareas();
 			}
 		});
 
@@ -237,7 +236,9 @@ public class ActualizarOrdenTrabajoDialog extends JDialog implements
 			public void actionPerformed(ActionEvent arg0) {
 				Tarea tarea = tareasTableModel.getTareaAt(tareasTable
 						.getSelectedRow());
-				ActualizarOrdenTrabajoDialog.this.removeTarea(tarea);
+				if(tarea != null) {
+					ActualizarOrdenTrabajoDialog.this.removeTarea(tarea);
+				}
 			}
 		});
 		tareasButtonsPanel.add(eliminarTareaButton, "4, 2");
@@ -257,18 +258,21 @@ public class ActualizarOrdenTrabajoDialog extends JDialog implements
 		botonesPanel.add(aceptarButton);
 		aceptarButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-//				Sistema.getInstancia().actualizarOrdenDeTrabajo(
-//						ActualizarOrdenTrabajoDialog.this.getOrdenTrabajo(),
-//						new java.util.Date().toString(), null,
-//						EstadoOrdenTrabajo.PREPARADO,
-//						ActualizarOrdenTrabajoDialog.this.getTareas());
+				Sistema.getInstancia().actualizarOrdenDeTrabajo(
+						ActualizarOrdenTrabajoDialog.this.getOrdenTrabajo(),
+						ActualizarOrdenTrabajoDialog.this.getTareas());
 				ActualizarOrdenTrabajoDialog.this.dispose();
 			}
 		});
 	}
 
 	protected void actualizarOrdenTrabajo() {
-		// TODO agregar al textfield
+		this.ordenDeTrabajoTextField.setText("Orden de Trabajo numero:"
+				+this.ordenTrabajo.getNumero());
+	}
+	
+	protected void actualizarTablaTareas() {
+		this.setTareas(this.ordenTrabajo.getListaTareas());
 	}
 
 	public void setTareas(List<Tarea> tareas) {
