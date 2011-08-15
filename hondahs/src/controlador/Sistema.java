@@ -1,6 +1,11 @@
 package controlador;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Vector;
 
@@ -64,11 +69,6 @@ public class Sistema {
 		return null;
 	}
 
-	/**
-	 * Obtiene los usuarios con perfil operario.
-	 * 
-	 * @return usuario operario.
-	 */
 	public List<Usuario> getOperarios() {
 		List<Usuario> operarios = new ArrayList<Usuario>();
 		for (Usuario usuario : UsuarioDAO.getInstancia().selectAll()) {
@@ -86,31 +86,32 @@ public class Sistema {
 		return TipoTareaDAO.getInstancia().selectAll();
 	}
 	
-	/**
-	 * Busca los presupuestos con fecha entre fechaInicio y fechaFin
-	 * 
-	 * @param fechaInicio de la busqueda.
-	 * @param fechaFin de la busqueda.
-	 * @return List<Presupuesto> de presupuestos encontrados.
-	 */
-	public List<Presupuesto> getPresupuestos(String fechaInicio, String fechaFin) {
-
-		if (fechaInicio.equals("") && fechaFin.equals("")) {
-			return PresupuestoDAO.getInstancia().selectAll();
-		}
-		return PresupuestoDAO.getInstancia().selectAllByDates(fechaInicio,
-				fechaFin);
-	}
 
 	/*-------------------------------------------------------------------------*/
 	/*---------------------  GENERAR ORDEN DE TRABAJO -------------------------*/
 	/*-------------------------------------------------------------------------*/
-	public OrdenTrabajo generarOrdenTrabajo(Presupuesto presupuesto,
-			String fechaInicio, String fechaFin, EstadoOrdenTrabajo estado,
-			List<Tarea> listaTareas) {
+	public List<Presupuesto> getPresupuestos(String fechaInicio, String fechaFin) {
 		
-		OrdenTrabajo ordenTrabajo = new OrdenTrabajo(presupuesto, fechaInicio,
-				fechaFin, estado, listaTareas);
+		List<Presupuesto> presupuestos = new ArrayList<Presupuesto>();	
+		for (Presupuesto presupuesto : PresupuestoDAO.getInstancia().selectAll()) {
+			if (perteneceAlRangoDeFechas(fechaInicio, fechaFin, presupuesto.getFecha())){
+				presupuestos.add(presupuesto);
+			}
+		}
+		return presupuestos;
+		
+	}
+
+	public OrdenTrabajo generarOrdenTrabajo(Presupuesto presupuesto, 
+			EstadoOrdenTrabajo estado, List<Tarea> listaTareas) {
+		
+		Calendar calendario = GregorianCalendar.getInstance();
+		Date fecha = calendario.getTime();
+		SimpleDateFormat formatoDeFecha = new SimpleDateFormat("dd/MM/yyyy");
+		String fechaInicio = formatoDeFecha.format(fecha);
+				
+		OrdenTrabajo ordenTrabajo = new OrdenTrabajo(presupuesto,fechaInicio,
+				null, estado, listaTareas);
 		
 		for (Tarea tarea : listaTareas) {
 			tarea.setOrdenTrabajo(ordenTrabajo);
@@ -127,20 +128,18 @@ public class Sistema {
 	 * Retorna la lista de ordenes de trabajo que esten entre la fecha 
 	 * de inico y fin pasadas
 	 */
-	@SuppressWarnings("unused")
 	public List<OrdenTrabajo> getOrdenesTrabajo(String fechaInicio,
 			String fechaFin) {
 		
-		List<OrdenTrabajo> ordenesTrabajo = OrdenTrabajoDAO.getInstancia()
-		.selectAll();
-		for (OrdenTrabajo ordenTrabajo : ordenesTrabajo) {
-			// TODO comparar fechas o arreglar el DAO
-			if (false)
-				ordenesTrabajo.remove(ordenTrabajo);
+		List<OrdenTrabajo> ordenesTrabajo = new ArrayList<OrdenTrabajo>();	
+		for (OrdenTrabajo ordenTrabajo : OrdenTrabajoDAO.getInstancia().selectAll()) {
+			if (perteneceAlRangoDeFechas(fechaInicio, fechaFin, ordenTrabajo.getFechaInicio())){
+				ordenesTrabajo.add(ordenTrabajo);
+			}
 		}
 		return ordenesTrabajo;
 	}
-	
+
 	public void actualizarOrdenDeTrabajo(OrdenTrabajo ordenTrabajo,
 			List<Tarea> listaTareas){
 		
@@ -187,6 +186,52 @@ public class Sistema {
 	/*-------------------------------------------------------------------------*/
 	/*--------------------- ACTUALIZAR ESTADO DE TAREA ------------------------*/
 	/*-------------------------------------------------------------------------*/
-
+	
+	/*-------------------------------------------------------------------------*/
+	/*----- METODOS GENERALES PARA TODAS LAS FUNCIONALIDADES ------------------*/
+	/*-------------------------------------------------------------------------*/
+	private boolean perteneceAlRangoDeFechas(String fechaInicio, String fechaFin,
+			String fechaInicioAComparar) {
+		
+		if((fechaInicio==null && fechaFin==null)
+				|| (fechaInicio.equals("") && fechaFin.equals(""))){
+			return true;
+		}
+		
+		//Comparo si las fechas estan dentro del rango seleccionado
+		SimpleDateFormat formatoDelTexto = new SimpleDateFormat("dd/MM/yyyy");
+		Date fechaMenor = null;
+		Date fechaMayor = null;
+		Date fechaInicioOT = null;
+		
+		try {
+			fechaInicioOT = formatoDelTexto.parse(fechaInicioAComparar);
+		} catch (ParseException ex) {}
+		try {
+			fechaMenor = formatoDelTexto.parse(fechaInicio);
+		} catch (ParseException ex) {}
+		try {
+			fechaMayor = formatoDelTexto.parse(fechaFin);
+		} catch (ParseException ex) {}
+		
+		if((fechaMenor!=null && fechaMayor!=null)
+				&& (!fechaMenor.equals("") && !fechaMayor.equals(""))){
+			if (fechaMenor.compareTo(fechaInicioOT) <= 0
+					&& fechaMayor.compareTo(fechaInicioOT) >= 0){
+			     return true;
+			}
+		}else if(fechaMenor!=null && !fechaMenor.equals("")){
+			if (fechaMenor.compareTo(fechaInicioOT) <= 0){
+			     return true;
+			}
+		} else if(fechaMayor!=null && !fechaMayor.equals("")){
+			if (fechaMayor.compareTo(fechaInicioOT) >= 0){
+			     return true;
+			}
+		}else {
+			return false;
+		}
+		return false;
+	}
 
 }
