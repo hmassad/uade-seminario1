@@ -4,6 +4,8 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Vector;
 
@@ -147,6 +149,7 @@ public class BuscarOrdenTrabajoDialog extends JDialog {
 	private JPanel filtrosPanel;
 	private JLabel fechaInicioLabel;
 	private JButton fechaInicioHoyButton;
+	private JButton fechaFinHoyButton;
 	private JButton buscarButton;
 
 	public BuscarOrdenTrabajoDialog() {
@@ -180,6 +183,12 @@ public class BuscarOrdenTrabajoDialog extends JDialog {
 		fechaInicioTextField.setColumns(10);
 
 		fechaInicioHoyButton = new JButton("Hoy");
+		fechaInicioHoyButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				fechaInicioTextField.setText(new SimpleDateFormat("dd/MM/yyyy")
+						.format(new Date()));
+			}
+		});
 		filtrosPanel.add(fechaInicioHoyButton, "6, 2");
 
 		buscarButton = new JButton("Buscar");
@@ -200,7 +209,13 @@ public class BuscarOrdenTrabajoDialog extends JDialog {
 		fechaFinTextField.setColumns(10);
 		filtrosPanel.add(fechaFinTextField, "4, 4, fill, default");
 
-		JButton fechaFinHoyButton = new JButton("Hoy");
+		fechaFinHoyButton = new JButton("Hoy");
+		fechaFinHoyButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				fechaFinTextField.setText(new SimpleDateFormat("dd/MM/yyyy")
+						.format(new Date()));
+			}
+		});
 		filtrosPanel.add(fechaFinHoyButton, "6, 4");
 
 		JPanel botonesPanel = new JPanel();

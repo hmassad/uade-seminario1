@@ -191,13 +191,11 @@ public class TareasAsignadasDialog extends JDialog {
 		fechaInicioTextField.setHorizontalAlignment(SwingConstants.CENTER);
 		filtrosPanel.add(fechaInicioTextField, "4, 2, fill, default");
 		fechaInicioTextField.setColumns(10);
-		fechaInicioTextField.setText(new SimpleDateFormat("dd/MM/yy")
-				.format(new Date()));
 
 		fechaInicioHoyButton = new JButton("Hoy");
 		fechaInicioHoyButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				fechaInicioTextField.setText(new SimpleDateFormat("dd/MM/yy")
+				fechaInicioTextField.setText(new SimpleDateFormat("dd/MM/yyyy")
 						.format(new Date()));
 			}
 		});
@@ -218,13 +216,11 @@ public class TareasAsignadasDialog extends JDialog {
 		fechaFinTextField.setHorizontalAlignment(SwingConstants.CENTER);
 		fechaFinTextField.setColumns(10);
 		filtrosPanel.add(fechaFinTextField, "4, 4, fill, default");
-		fechaFinTextField.setText(new SimpleDateFormat("dd/MM/yy")
-				.format(new Date()));
 
 		fechaFinHoyButton = new JButton("Hoy");
 		fechaFinHoyButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				fechaFinTextField.setText(new SimpleDateFormat("dd/MM/yy")
+				fechaFinTextField.setText(new SimpleDateFormat("dd/MM/yyyy")
 						.format(new Date()));
 			}
 		});

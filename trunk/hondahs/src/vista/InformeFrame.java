@@ -2,6 +2,10 @@ package vista;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -27,6 +31,8 @@ public class InformeFrame extends JFrame {
 	private JTextField fechaFinTextField;
 	private JTextField clienteTextField;
 	private JTextField vehiculoTextField;
+	private JButton fechaInicioHoyButton;
+	private JButton fechaFinHoyButton;
 
 	public InformeFrame() {
 		setName("informeFrame");
@@ -68,7 +74,13 @@ public class InformeFrame extends JFrame {
 		filtrosPanel.add(fechaInicioTextField, "4, 2, fill, default");
 		fechaInicioTextField.setColumns(10);
 
-		JButton fechaInicioHoyButton = new JButton("Hoy");
+		fechaInicioHoyButton = new JButton("Hoy");
+		fechaInicioHoyButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				fechaInicioTextField.setText(new SimpleDateFormat("dd/MM/yyyy")
+						.format(new Date()));
+			}
+		});
 		filtrosPanel.add(fechaInicioHoyButton, "6, 2");
 
 		JLabel fechaFinalLabel = new JLabel("Fecha Final");
@@ -78,7 +90,13 @@ public class InformeFrame extends JFrame {
 		fechaFinTextField.setColumns(10);
 		filtrosPanel.add(fechaFinTextField, "10, 2, fill, default");
 
-		JButton fechaFinHoyButton = new JButton("Hoy");
+		fechaFinHoyButton = new JButton("Hoy");
+		fechaFinHoyButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				fechaFinTextField.setText(new SimpleDateFormat("dd/MM/yyyy")
+						.format(new Date()));
+			}
+		});
 		filtrosPanel.add(fechaFinHoyButton, "12, 2");
 
 		JLabel clienteLabel = new JLabel("Cliente");

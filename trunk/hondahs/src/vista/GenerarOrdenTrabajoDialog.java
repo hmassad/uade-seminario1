@@ -317,7 +317,6 @@ public class GenerarOrdenTrabajoDialog extends JDialog implements
 			public void actionPerformed(ActionEvent arg0) {
 				Sistema.getInstancia().generarOrdenTrabajo(
 						GenerarOrdenTrabajoDialog.this.getPresupuesto(),
-						new java.util.Date().toString(), null,
 						EstadoOrdenTrabajo.PREPARADO,
 						GenerarOrdenTrabajoDialog.this.getTareas());
 				GenerarOrdenTrabajoDialog.this.dispose();
