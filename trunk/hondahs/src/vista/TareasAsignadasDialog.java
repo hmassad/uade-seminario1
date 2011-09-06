@@ -34,7 +34,7 @@ import com.jgoodies.forms.layout.RowSpec;
 
 import controlador.Sistema;
 
-public class TareasAsignadasDialog extends JDialog {
+public class TareasAsignadasDialog extends JDialog{
 
 	class TareasTableModel extends AbstractTableModel {
 
@@ -204,7 +204,10 @@ public class TareasAsignadasDialog extends JDialog {
 		buscarButton = new JButton("Buscar");
 		buscarButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				actualizarTareas();
+				List<Tarea> tareas = Sistema.getInstancia()
+				.getTareas(fechaInicioTextField.getText(),
+						fechaFinTextField.getText());
+				actualizarTareas(tareas);
 			}
 		});
 		filtrosPanel.add(buscarButton, "8, 2, 1, 3");
@@ -254,7 +257,6 @@ public class TareasAsignadasDialog extends JDialog {
 					return;
 				ListSelectionModel rowSM = (ListSelectionModel) e.getSource();
 				int selectedIndex = rowSM.getMinSelectionIndex();
-				// do something with selected index
 				TareasAsignadasDialog.this.modificarButton
 						.setEnabled(selectedIndex != -1);
 			}
@@ -280,7 +282,7 @@ public class TareasAsignadasDialog extends JDialog {
 				ActualizarEstadoTareaDialog actualizarEstadoTareaDialog = new ActualizarEstadoTareaDialog();
 				actualizarEstadoTareaDialog.setTarea(tarea);
 				actualizarEstadoTareaDialog.setVisible(true);
-				actualizarTareas();
+				actualizarEstadoDeTareas();
 			}
 		});
 		botonesPanel.add(modificarButton);
@@ -294,11 +296,19 @@ public class TareasAsignadasDialog extends JDialog {
 		return this.usuario;
 	}
 
-	private void actualizarTareas() {
+	private void actualizarTareas(List<Tarea> tareas) {
 		tareasTableModel.clear();
-		Tarea[] tareas = Sistema.getInstancia().getTareasPorOperario(usuario);
+		//TODO ver que onda lo distintos usuarios!
+		//Tarea[] tareas = Sistema.getInstancia().getTareasPorOperario(usuario);
 		for (Tarea tarea : tareas) {
 			tareasTableModel.add(tarea);
 		}
+	}
+	
+	private void actualizarEstadoDeTareas() {
+		List<Tarea> tareas = Sistema.getInstancia()
+		.getTareas(fechaInicioTextField.getText(),
+				fechaFinTextField.getText());
+		actualizarTareas(tareas);
 	}
 }

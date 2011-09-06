@@ -99,11 +99,8 @@ public class ActualizarEstadoTareaDialog extends JDialog {
 		aceptarButton = new JButton("Aceptar");
 		aceptarButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				Sistema.getInstancia()
-						.modificarEstadoTarea(
-								tarea,
-								(EstadoTarea) ActualizarEstadoTareaDialog.this.estadoComboBox
-										.getSelectedItem());
+				Sistema.getInstancia().modificarEstadoTarea(tarea,
+					(EstadoTarea) ActualizarEstadoTareaDialog.this.estadoComboBox.getSelectedItem());
 				ActualizarEstadoTareaDialog.this.dispose();
 			}
 		});
