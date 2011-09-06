@@ -34,6 +34,7 @@ public class InformeFrame extends JFrame {
 	private JButton fechaInicioHoyButton;
 	private JButton fechaFinHoyButton;
 
+	@SuppressWarnings("serial")
 	public InformeFrame() {
 		setName("informeFrame");
 		setSize(new Dimension(545, 364));
@@ -139,9 +140,11 @@ public class InformeFrame extends JFrame {
 				{ null, null, null, null, null, null }, }, new String[] {
 				"N\u00FAmero", "Cliente", "Veh\u00EDculo", "Fecha Inicio",
 				"Fecha Fin", "Estado" }) {
+			@SuppressWarnings("rawtypes")
 			Class[] columnTypes = new Class[] { Object.class, Object.class,
 					Object.class, Object.class, Object.class, String.class };
 
+			@SuppressWarnings({ "unchecked", "rawtypes" })
 			public Class getColumnClass(int columnIndex) {
 				return columnTypes[columnIndex];
 			}

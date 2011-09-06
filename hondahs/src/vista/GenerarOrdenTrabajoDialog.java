@@ -385,4 +385,5 @@ public class GenerarOrdenTrabajoDialog extends JDialog implements
 	public void removeTarea(Tarea tarea) {
 		tareasTableModel.remove(tarea);
 	}
+
 }

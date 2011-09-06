@@ -124,10 +124,7 @@ public class Sistema {
 	/*-------------------------------------------------------------------------*/
 	/*--------------------- ACTUALIZAR ORDEN DE TRABAJO -----------------------*/
 	/*-------------------------------------------------------------------------*/
-	/**
-	 * Retorna la lista de ordenes de trabajo que esten entre la fecha 
-	 * de inico y fin pasadas
-	 */
+
 	public List<OrdenTrabajo> getOrdenesTrabajo(String fechaInicio,
 			String fechaFin) {
 		
@@ -186,6 +183,17 @@ public class Sistema {
 	/*-------------------------------------------------------------------------*/
 	/*--------------------- ACTUALIZAR ESTADO DE TAREA ------------------------*/
 	/*-------------------------------------------------------------------------*/
+	
+	public List<Tarea> getTareas(String fechaInicio,String fechaFin) {
+		
+		List<Tarea> tareas = new ArrayList<Tarea>();	
+		for (Tarea tarea : TareaDAO.getInstancia().selectAll()) {
+			if (perteneceAlRangoDeFechas(fechaInicio, fechaFin, tarea.getFechaInicio())){
+				tareas.add(tarea);
+			}
+		}
+		return tareas;
+	}
 	
 	/*-------------------------------------------------------------------------*/
 	/*----- METODOS GENERALES PARA TODAS LAS FUNCIONALIDADES ------------------*/
