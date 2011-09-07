@@ -125,7 +125,7 @@ public class UsuarioDAO {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public Usuario select(String nombre, String password) throws RuntimeException {
+	public Usuario select(String usuario, String password) throws RuntimeException {
 		
 		Transaction tx = null;
 		Session session = SessionFactoryUtil.getInstance().getCurrentSession();
@@ -134,7 +134,7 @@ public class UsuarioDAO {
 			
 			tx = session.beginTransaction();
 			usuarios = session.createCriteria(Usuario.class)
-		    .add( Restrictions.eq("nombre",nombre))
+		    .add( Restrictions.eq("usuario",usuario))
 		    .add( Restrictions.eq("clave",password))
 		    .list();
 			

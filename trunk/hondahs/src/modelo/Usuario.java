@@ -22,6 +22,9 @@ public class Usuario {
 	@Column(name="nombre",nullable=false)
 	private String nombre;
 	
+	@Column(name="usuario",nullable=false)
+	private String usuario;
+	
 	@Column(name="legajo",nullable=false)
 	private Integer legajo;
 	
@@ -36,12 +39,14 @@ public class Usuario {
 	}
 
 	public Usuario(String nombre, Integer legajo,
-			TipoUsuario tipoUsuario, String clave) {
+			TipoUsuario tipoUsuario, String clave, 
+			String usuario) {
 		
 		this.nombre = nombre;
 		this.legajo = legajo;
 		this.tipoUsuario = tipoUsuario;
 		this.clave = clave;
+		this.usuario = usuario;
 	}
 
 	public Integer getNumero() {
@@ -89,6 +94,14 @@ public class Usuario {
 	@Override
 	public String toString() {
 		return nombre;
+	}
+
+	public String getUsuario() {
+		return usuario;
+	}
+
+	public void setUsuario(String usuario) {
+		this.usuario = usuario;
 	}
 	
 
