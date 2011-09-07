@@ -161,13 +161,13 @@ public class TareasAsignadasDialog extends JDialog{
 	private JButton cerrarButton;
 	private JPanel botonesPanel;
 	private JPanel tablaPanel;
-
 	private JScrollPane scrollPane;
 
 	public TareasAsignadasDialog() {
 		setName("tareasAsignadasDialog");
 		setModal(true);
 		setSize(new Dimension(400, 300));
+		setLocation(400,300);
 		setPreferredSize(new Dimension(400, 300));
 		setTitle("Tareas Asignadas");
 
@@ -265,7 +265,7 @@ public class TareasAsignadasDialog extends JDialog{
 		botonesPanel = new JPanel();
 		getContentPane().add(botonesPanel, BorderLayout.SOUTH);
 
-		cerrarButton = new JButton("Cerrar");
+		cerrarButton = new JButton("Cancelar");
 		cerrarButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				TareasAsignadasDialog.this.dispose();
@@ -298,8 +298,6 @@ public class TareasAsignadasDialog extends JDialog{
 
 	private void actualizarTareas(List<Tarea> tareas) {
 		tareasTableModel.clear();
-		//TODO ver que onda lo distintos usuarios!
-		//Tarea[] tareas = Sistema.getInstancia().getTareasPorOperario(usuario);
 		for (Tarea tarea : tareas) {
 			tareasTableModel.add(tarea);
 		}

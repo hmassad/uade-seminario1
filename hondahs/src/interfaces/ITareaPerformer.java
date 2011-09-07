@@ -1,4 +1,4 @@
-package vista;
+package interfaces;
 
 import modelo.Tarea;
 

@@ -17,6 +17,8 @@ import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableModel;
 
+import modelo.EstadoOrdenTrabajo;
+
 import com.jgoodies.forms.factories.FormFactory;
 import com.jgoodies.forms.layout.ColumnSpec;
 import com.jgoodies.forms.layout.FormLayout;
@@ -33,11 +35,13 @@ public class InformeFrame extends JFrame {
 	private JTextField vehiculoTextField;
 	private JButton fechaInicioHoyButton;
 	private JButton fechaFinHoyButton;
+	private JComboBox estadoComboBox;
 
 	@SuppressWarnings("serial")
 	public InformeFrame() {
 		setName("informeFrame");
 		setSize(new Dimension(545, 364));
+		setLocation(400,300);
 		setPreferredSize(new Dimension(400, 300));
 		setTitle("Informes");
 
@@ -107,11 +111,16 @@ public class InformeFrame extends JFrame {
 		filtrosPanel.add(clienteTextField, "4, 4, 3, 1, fill, default");
 		clienteTextField.setColumns(10);
 		
-				JLabel estadoLabel = new JLabel("Estado");
-				filtrosPanel.add(estadoLabel, "8, 4, right, default");
+		JLabel estadoLabel = new JLabel("Estado");
+		filtrosPanel.add(estadoLabel, "8, 4, right, default");
+
+		estadoComboBox = new JComboBox();
+		EstadoOrdenTrabajo[] estados = EstadoOrdenTrabajo.values();
+		for (EstadoOrdenTrabajo estadoOrdenTrabajo : estados) {
+			estadoComboBox.addItem(estadoOrdenTrabajo.getCode().toString());
+		}
 		
-				JComboBox estadoComboBox = new JComboBox();
-				filtrosPanel.add(estadoComboBox, "10, 4, 3, 1, fill, default");
+		filtrosPanel.add(estadoComboBox, "10, 4, 3, 1, fill, default");
 
 		JLabel vehiculoLabel = new JLabel("Veh\u00EDculo");
 		filtrosPanel.add(vehiculoLabel, "2, 6, right, default");

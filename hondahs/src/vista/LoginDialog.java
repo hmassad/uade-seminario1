@@ -1,5 +1,7 @@
 package vista;
 
+import interfaces.ILoginPerformer;
+
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
@@ -10,6 +12,7 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
@@ -43,6 +46,7 @@ public class LoginDialog extends JDialog {
 		setName("loginDialog");
 		setModal(true);
 		setSize(new Dimension(300, 200));
+		setLocation(400,300);
 		setPreferredSize(new Dimension(300, 200));
 		setTitle("Sistema de Administraci\u00F3n de \u00D3rdenes de Trabajo para Honda HS");
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
@@ -108,13 +112,23 @@ public class LoginDialog extends JDialog {
 		loginButton.addActionListener(new ActionListener() {
 			@SuppressWarnings("deprecation")
 			public void actionPerformed(ActionEvent arg0) {
-				Usuario usuario = Sistema.getInstancia().getUsuario(
+				Usuario usuario = Sistema.getInstancia().validarLogin(
 						usuarioTextField.getText(),
 						passwordTextField.getText(),
 						perfilComboBox.getSelectedItem().toString());
+				
+				if (usuario == null) {
+				
+					JOptionPane.showMessageDialog(LoginDialog.this,
+							"El usuario o la contraseña son incorrectos.",
+							"Error de Usuario y/o Contraseña",
+							JOptionPane.ERROR_MESSAGE);
+					return;
 
-				if (LoginDialog.this.loginPerformer != null) {
+				} else {
+					
 					LoginDialog.this.loginPerformer.setUsuario(usuario);
+					LoginDialog.this.loginPerformer.cargarMenuAplicacion();
 					LoginDialog.this.dispose();
 				}
 			}

@@ -1,5 +1,7 @@
 package vista;
 
+import interfaces.IOrdenTrabajoPerformer;
+
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
@@ -13,8 +15,10 @@ import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.ListSelectionModel;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.AbstractTableModel;
@@ -27,7 +31,6 @@ import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.RowSpec;
 
 import controlador.Sistema;
-import javax.swing.ListSelectionModel;
 
 public class BuscarOrdenTrabajoDialog extends JDialog {
 
@@ -75,7 +78,7 @@ public class BuscarOrdenTrabajoDialog extends JDialog {
 			return ordenesTrabajo.get(rowIndex);
 		}
 
-		String[] titulos = { "N\u00FAmero", "Cliente", "Veh\u00EDculo",
+		String[] titulos = new String[] { "N\u00FAmero", "Cliente", "Veh\u00EDculo",
 				"Fecha Inicio", "Estado" };
 
 		@Override
@@ -151,12 +154,15 @@ public class BuscarOrdenTrabajoDialog extends JDialog {
 	private JButton fechaInicioHoyButton;
 	private JButton fechaFinHoyButton;
 	private JButton buscarButton;
+	private JPanel tablaPanel;
+	private JScrollPane scrollPane;
 
 	public BuscarOrdenTrabajoDialog() {
 
 		setName("buscarOrdenTrabajoDialog");
 		setModal(true);
 		setSize(new Dimension(400, 300));
+		setLocation(400,300);
 		setPreferredSize(new Dimension(400, 300));
 		setTitle("Buscar Orden de Trabajo");
 
@@ -217,7 +223,29 @@ public class BuscarOrdenTrabajoDialog extends JDialog {
 			}
 		});
 		filtrosPanel.add(fechaFinHoyButton, "6, 4");
+		
+		tablaPanel = new JPanel();
+		getContentPane().add(tablaPanel, BorderLayout.CENTER);
 
+		ordenesTrabajoTableModel = new OrdenesTrabajoTableModel();
+		tablaPanel.setLayout(new BorderLayout(0, 0));
+
+		scrollPane = new JScrollPane();
+		tablaPanel.add(scrollPane);
+		scrollPane.setViewportView(ordenesTrabajoTable);
+
+		ordenesTrabajoTable = new JTable();
+		ordenesTrabajoTable.setFillsViewportHeight(true);
+		scrollPane.setViewportView(ordenesTrabajoTable);
+		ordenesTrabajoTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		ordenesTrabajoTable.setDoubleBuffered(true);
+		ordenesTrabajoTable.setModel(ordenesTrabajoTableModel);
+		ordenesTrabajoTable.getColumnModel().getColumn(0).setResizable(false);
+		ordenesTrabajoTable.getColumnModel().getColumn(1).setResizable(false);
+		ordenesTrabajoTable.getColumnModel().getColumn(2).setResizable(false);
+		ordenesTrabajoTable.getColumnModel().getColumn(3).setResizable(false);
+		ordenesTrabajoTable.getColumnModel().getColumn(4).setResizable(false);
+		
 		JPanel botonesPanel = new JPanel();
 		getContentPane().add(botonesPanel, BorderLayout.SOUTH);
 
@@ -241,13 +269,6 @@ public class BuscarOrdenTrabajoDialog extends JDialog {
 		});
 		botonesPanel.add(aceptarButton);
 
-		ordenesTrabajoTable = new JTable();
-		ordenesTrabajoTable
-				.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		ordenesTrabajoTable.setFillsViewportHeight(true);
-		ordenesTrabajoTable.setDoubleBuffered(true);
-		getContentPane().add(ordenesTrabajoTable, BorderLayout.CENTER);
-		ordenesTrabajoTable.setModel(ordenesTrabajoTableModel);
 	}
 
 	public void setOrdenTrabajoPerformer(

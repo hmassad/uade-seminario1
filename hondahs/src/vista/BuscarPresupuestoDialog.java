@@ -1,5 +1,7 @@
 package vista;
 
+import interfaces.IPresupuestoPerformer;
+
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
@@ -13,8 +15,10 @@ import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.ListSelectionModel;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.AbstractTableModel;
@@ -74,7 +78,7 @@ public class BuscarPresupuestoDialog extends JDialog {
 			return presupuestos.get(rowIndex);
 		}
 
-		String[] titulos = { "N\u00FAmero", "Cliente", "Veh\u00EDculo", "Fecha" };
+		String[] titulos = new String[] { "N\u00FAmero", "Cliente", "Veh\u00EDculo", "Fecha" };
 
 		@Override
 		public String getColumnName(int column) {
@@ -146,12 +150,15 @@ public class BuscarPresupuestoDialog extends JDialog {
 	private JButton fechaInicioHoyButton;
 	private JButton fechaFinHoyButton;
 	private JButton buscarButton;
+	private JPanel tablaPanel;
+	private JScrollPane scrollPane;
 
 	public BuscarPresupuestoDialog() {
 
 		setName("buscarPresupuestoDialog");
 		setModal(true);
 		setSize(new Dimension(400, 300));
+		setLocation(400,300);
 		setPreferredSize(new Dimension(400, 300));
 		setTitle("Buscar Presupuesto");
 
@@ -212,7 +219,28 @@ public class BuscarPresupuestoDialog extends JDialog {
 			}
 		});
 		filtrosPanel.add(fechaFinHoyButton, "6, 4");
+		
+		tablaPanel = new JPanel();
+		getContentPane().add(tablaPanel, BorderLayout.CENTER);
 
+		presupuestosTableModel = new PresupuestosTableModel();
+		tablaPanel.setLayout(new BorderLayout(0, 0));
+
+		scrollPane = new JScrollPane();
+		tablaPanel.add(scrollPane);
+		scrollPane.setViewportView(presupuestosTable);
+
+		presupuestosTable = new JTable();
+		presupuestosTable.setFillsViewportHeight(true);
+		scrollPane.setViewportView(presupuestosTable);
+		presupuestosTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		presupuestosTable.setDoubleBuffered(true);
+		presupuestosTable.setModel(presupuestosTableModel);
+		presupuestosTable.getColumnModel().getColumn(0).setResizable(false);
+		presupuestosTable.getColumnModel().getColumn(1).setResizable(false);
+		presupuestosTable.getColumnModel().getColumn(2).setResizable(false);
+		presupuestosTable.getColumnModel().getColumn(3).setResizable(false);
+				
 		JPanel botonesPanel = new JPanel();
 		getContentPane().add(botonesPanel, BorderLayout.SOUTH);
 
@@ -237,9 +265,6 @@ public class BuscarPresupuestoDialog extends JDialog {
 		});
 		botonesPanel.add(aceptarButton);
 
-		presupuestosTable = new JTable();
-		presupuestosTable.setModel(presupuestosTableModel);
-		getContentPane().add(presupuestosTable, BorderLayout.CENTER);
 	}
 
 	public void setPresupuestoPerformer(

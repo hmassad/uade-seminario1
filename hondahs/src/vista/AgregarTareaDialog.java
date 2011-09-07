@@ -1,9 +1,12 @@
 package vista;
 
+import interfaces.ITareaPerformer;
+
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Calendar;
 import java.util.Vector;
 
 import javax.swing.DefaultComboBoxModel;
@@ -44,6 +47,7 @@ public class AgregarTareaDialog extends JDialog {
 		setName("agregarTareaDialog");
 		setModal(true);
 		setSize(new Dimension(350, 150));
+		setLocation(400,300);
 		setResizable(false);
 		setTitle("Agregar Tarea");
 
@@ -97,13 +101,17 @@ public class AgregarTareaDialog extends JDialog {
 		aceptarButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				if (tareaPerformer != null) {
+					
+					Calendar calendar = Calendar.getInstance();
+					String fechaDeInicio = Integer.toString(calendar.get(Calendar.DATE))
+							+ "/" + Integer.toString(calendar.get(Calendar.MONTH))
+							+ "/" + Integer.toString(calendar.get(Calendar.YEAR));
+					
 					tareaPerformer.addTarea(new Tarea(
 						(TipoTarea) AgregarTareaDialog.this.tiposTareaComboBox.getSelectedItem(),
-						EstadoTarea.ASIGNADA,
-						null,
+						EstadoTarea.ASIGNADA,null,
 						(Usuario) AgregarTareaDialog.this.operariosComboBox.getSelectedItem(),
-						new java.util.Date().toString(),
-						null));
+						fechaDeInicio,null));
 				}
 				AgregarTareaDialog.this.dispose();
 			}
