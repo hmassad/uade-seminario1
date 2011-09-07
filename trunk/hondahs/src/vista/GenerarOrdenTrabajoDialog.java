@@ -1,5 +1,8 @@
 package vista;
 
+import interfaces.IPresupuestoPerformer;
+import interfaces.ITareaPerformer;
+
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -166,6 +169,7 @@ public class GenerarOrdenTrabajoDialog extends JDialog implements
 		setName("generarOrdenTrabajoDialog");
 		setModal(true);
 		setSize(new Dimension(400, 300));
+		setLocation(400,300);
 		setPreferredSize(new Dimension(400, 300));
 		setTitle("Generar Orden de Trabajo");
 

@@ -40,33 +40,24 @@ public class Sistema {
 	private Sistema() {
 	}
 
-	public boolean validarLogin(String usuario, String password, String perfil) {
+	public Usuario validarLogin(String usuario, String password, String perfil) {
 		// busco al usuario con el nombre y password
 		Usuario usr = UsuarioDAO.getInstancia().select(usuario, password);
 		if (usr != null) {
 			if (usr.getTipoUsuario().getCode().equals(perfil)) {
 				this.usuarioLogeado = usr;
-				return true;
+				return this.usuarioLogeado;
 			} else {
-				return false;
+				return null;
 			}
 		} else {
-			return false;
+			return null;
 		}
 	}
 
 	public Cliente crearCliente(String nombre, String email, Integer telefono,
 			Integer celular, String direccion) {
 		return new Cliente(nombre, email, telefono, celular, direccion);
-	}
-
-	public Usuario getUsuario(String nombre, String password, String perfil) {
-		// busco al usuario con el nombre y password
-		Usuario usuario = UsuarioDAO.getInstancia().select(nombre, password);
-		if (usuario != null
-				&& usuario.getTipoUsuario().getCode().equals(perfil))
-			return usuario;
-		return null;
 	}
 
 	public List<Usuario> getOperarios() {
@@ -156,26 +147,17 @@ public class Sistema {
 	public void agregarTarea(OrdenTrabajo ordenTrabajo, TipoTarea tipoTarea,
 			Usuario operario) {
 		
+		Calendar calendar = Calendar.getInstance();
+		String fechaDeInicio = Integer.toString(calendar.get(Calendar.DATE))
+				+ "/" + Integer.toString(calendar.get(Calendar.MONTH))
+				+ "/" + Integer.toString(calendar.get(Calendar.YEAR));
+		
 		ordenTrabajo.getListaTareas().add(
 				new Tarea(tipoTarea, EstadoTarea.ASIGNADA, null, operario,
-						new java.util.Date().toString(),ordenTrabajo));
+						fechaDeInicio,ordenTrabajo));
 		OrdenTrabajoDAO.getInstancia().update(ordenTrabajo);
 	}
 
-	public void modificarEstadoTarea(Tarea tarea, EstadoTarea estadoTarea) {
-		tarea.setEstado(estadoTarea);
-		TareaDAO.getInstancia().update(tarea);
-	}
-
-	public Tarea[] getTareasPorOperario(Usuario usuario) {
-		List<Tarea> tareas = new Vector<Tarea>();
-		for (Tarea tarea : TareaDAO.getInstancia().selectAll()) {
-			if (tarea.getUsuario().equals(usuario))
-				tareas.add(tarea);
-		}
-		return tareas.toArray(new Tarea[0]);
-	}
-	
 	/*-------------------------------------------------------------------------*/
 	/*--------------------- GENERAR INFORME DE OTs ----------------------------*/
 	/*-------------------------------------------------------------------------*/
@@ -185,14 +167,43 @@ public class Sistema {
 	/*-------------------------------------------------------------------------*/
 	
 	public List<Tarea> getTareas(String fechaInicio,String fechaFin) {
+		List<Tarea> tareas = new Vector<Tarea>();
 		
-		List<Tarea> tareas = new ArrayList<Tarea>();	
-		for (Tarea tarea : TareaDAO.getInstancia().selectAll()) {
-			if (perteneceAlRangoDeFechas(fechaInicio, fechaFin, tarea.getFechaInicio())){
-				tareas.add(tarea);
+		// Dependiendo el perfil del usuario se muestran las tareas
+		if(usuarioLogeado.getTipoUsuario().name().equals("ADMINISTRATIVO")
+		 	|| usuarioLogeado.getTipoUsuario().name().equals("JEFEDETALLER")  
+		 	|| usuarioLogeado.getTipoUsuario().name().equals("DUENIO")){
+			
+			//Traigo todas las tareas cargadas en la base de datos
+			for (Tarea tarea : TareaDAO.getInstancia().selectAll()) {
+				if (perteneceAlRangoDeFechas(fechaInicio, fechaFin, tarea.getFechaInicio())){
+					tareas.add(tarea);
+				}
+			}
+		}else{
+			//Traigo las tareas que solo correspondan al usurio que esta usando el sistema
+			for (Tarea tarea : TareaDAO.getInstancia().selectAll()) {
+				if (tarea.getUsuario().getLegajo().equals(this.usuarioLogeado.getLegajo())
+						&& perteneceAlRangoDeFechas(fechaInicio, fechaFin, tarea.getFechaInicio()))
+					tareas.add(tarea);
 			}
 		}
 		return tareas;
+	}
+	
+	public void modificarEstadoTarea(Tarea tarea, EstadoTarea estadoTarea) {
+		
+		// Si es terminada guardo la fecha de fin
+		if(estadoTarea.name().equals("TERMINADA")) { 
+			Calendar calendar = Calendar.getInstance();
+			String fechaDefin = Integer.toString(calendar.get(Calendar.DATE))
+					+ "/" + Integer.toString(calendar.get(Calendar.MONTH))
+					+ "/" + Integer.toString(calendar.get(Calendar.YEAR));
+			tarea.setFechaFin(fechaDefin);
+		}
+
+		tarea.setEstado(estadoTarea);
+		TareaDAO.getInstancia().update(tarea);
 	}
 	
 	/*-------------------------------------------------------------------------*/

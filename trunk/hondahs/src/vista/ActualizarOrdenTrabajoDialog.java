@@ -1,5 +1,8 @@
 package vista;
 
+import interfaces.IOrdenTrabajoPerformer;
+import interfaces.ITareaPerformer;
+
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
@@ -156,6 +159,7 @@ public class ActualizarOrdenTrabajoDialog extends JDialog implements
 		setName("generarOrdenTrabajoDialog");
 		setModal(true);
 		setSize(new Dimension(400, 300));
+		setLocation(400,300);
 		setPreferredSize(new Dimension(400, 300));
 		setTitle("Actualizar Orden de Trabajo");
 
@@ -267,12 +271,16 @@ public class ActualizarOrdenTrabajoDialog extends JDialog implements
 	}
 
 	protected void actualizarOrdenTrabajo() {
-		this.ordenDeTrabajoTextField.setText("Orden de Trabajo numero:"
+		if(this.ordenTrabajo != null){
+			this.ordenDeTrabajoTextField.setText("Orden de Trabajo numero:"
 				+this.ordenTrabajo.getNumero());
+		}
 	}
 	
 	protected void actualizarTablaTareas() {
-		this.setTareas(this.ordenTrabajo.getListaTareas());
+		if(this.ordenTrabajo != null){
+			this.setTareas(this.ordenTrabajo.getListaTareas());
+		}
 	}
 
 	public void setTareas(List<Tarea> tareas) {

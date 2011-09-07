@@ -44,6 +44,7 @@ public class ActualizarEstadoTareaDialog extends JDialog {
 		setName("actualizarEstadoTareaDialog");
 		setModal(true);
 		setSize(new Dimension(400, 149));
+		setLocation(400,300);
 		setPreferredSize(new Dimension(400, 300));
 		setTitle("Actualizar Estado de Tarea");
 
