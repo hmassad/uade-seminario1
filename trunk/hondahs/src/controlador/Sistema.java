@@ -9,7 +9,6 @@ import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Vector;
 
-import modelo.Cliente;
 import modelo.EstadoOrdenTrabajo;
 import modelo.EstadoTarea;
 import modelo.OrdenTrabajo;
@@ -53,11 +52,6 @@ public class Sistema {
 		} else {
 			return null;
 		}
-	}
-
-	public Cliente crearCliente(String nombre, String email, Integer telefono,
-			Integer celular, String direccion) {
-		return new Cliente(nombre, email, telefono, celular, direccion);
 	}
 
 	public List<Usuario> getOperarios() {
