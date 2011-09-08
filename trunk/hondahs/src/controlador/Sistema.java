@@ -22,6 +22,7 @@ import persistencia.PresupuestoDAO;
 import persistencia.TareaDAO;
 import persistencia.TipoTareaDAO;
 import persistencia.UsuarioDAO;
+import vista.tablesModel.RegistroInforme;
 
 public class Sistema {
 
@@ -155,6 +156,17 @@ public class Sistema {
 	/*-------------------------------------------------------------------------*/
 	/*--------------------- GENERAR INFORME DE OTs ----------------------------*/
 	/*-------------------------------------------------------------------------*/
+	
+	public List<RegistroInforme> getInforme(String cliente, String vehiculo,
+			String estado, String fechaInicio, String fechaFin) {
+				
+		List<RegistroInforme> registros = new ArrayList<RegistroInforme>();
+		
+		
+		
+		
+		return null;
+	}
 	
 	/*-------------------------------------------------------------------------*/
 	/*--------------------- ACTUALIZAR ESTADO DE TAREA ------------------------*/

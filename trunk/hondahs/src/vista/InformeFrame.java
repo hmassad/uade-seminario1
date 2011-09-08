@@ -6,28 +6,147 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
+import java.util.Vector;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
-import javax.swing.table.DefaultTableModel;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
+import javax.swing.table.AbstractTableModel;
 
 import modelo.EstadoOrdenTrabajo;
+import vista.tablesModel.RegistroInforme;
 
 import com.jgoodies.forms.factories.FormFactory;
 import com.jgoodies.forms.layout.ColumnSpec;
 import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.RowSpec;
 
+import controlador.Sistema;
+
 public class InformeFrame extends JFrame {
 
-	private static final long serialVersionUID = 1L;
+	class InformeTableModel extends AbstractTableModel {
 
+		private static final long serialVersionUID = 1L;
+
+		private List<RegistroInforme> registros = new Vector<RegistroInforme>();
+
+		public void clear() {
+			int rows = registros.size();
+			registros.clear();
+			TableModelEvent event = new TableModelEvent(this, 0, rows,
+					TableModelEvent.ALL_COLUMNS, TableModelEvent.DELETE);
+			for (Object l : listenerList.getListenerList())
+				if (l instanceof TableModelListener) {
+					((TableModelListener) l).tableChanged(event);
+				}
+		}
+
+		public void add(RegistroInforme registroInforme) {
+			registros.add(registroInforme);
+			TableModelEvent event = new TableModelEvent(this,
+					registros.size() - 1, registros.size() - 1,
+					TableModelEvent.ALL_COLUMNS, TableModelEvent.DELETE);
+			for (Object l : listenerList.getListenerList())
+				if (l instanceof TableModelListener) {
+					((TableModelListener) l).tableChanged(event);
+				}
+		}
+
+		public void remove(RegistroInforme registroInforme) {
+			int index = registros.indexOf(registroInforme);
+			registros.remove(registroInforme);
+
+			for (Object l : listenerList.getListenerList())
+				if (l instanceof TableModelListener) {
+					((TableModelListener) l).tableChanged(new TableModelEvent(
+							this, index, index, TableModelEvent.ALL_COLUMNS,
+							TableModelEvent.DELETE));
+				}
+		}
+
+		public RegistroInforme getRegistroInformeAt(int rowIndex) {
+			return registros.get(rowIndex);
+		}
+
+		String[] titulos = new String[] { "N\u00FAmero", "Cliente",
+				"Veh\u00EDculo", "Fecha Inicio", "Fecha Fin", "Estado" };
+
+		@Override
+		public String getColumnName(int column) {
+			return titulos[column];
+		}
+
+		@Override
+		public int getColumnCount() {
+			return titulos.length;
+		}
+
+		@Override
+		public int getRowCount() {
+			return registros.size();
+		}
+
+		@Override
+		public Object getValueAt(int rowIndex, int columnIndex) {
+			RegistroInforme registroInforme = registros.get(rowIndex);
+			switch (columnIndex) {
+			case 0:
+				return registroInforme.getNumeroOT();
+			case 1:
+				return registroInforme.getCliente();
+			case 2:
+				return registroInforme.getPatente();
+			case 3:
+				return registroInforme.getFechaInicio();
+			case 4:
+				return registroInforme.getFechaFin();
+			case 5:
+				return registroInforme.getEstado();
+			}
+			throw new RuntimeException("La columna no existe.");
+		}
+
+		@SuppressWarnings("rawtypes")
+		Class[] columnTypes = new Class[] { Integer.class, String.class,
+				String.class, String.class, String.class, String.class };
+
+		@SuppressWarnings({ "unchecked", "rawtypes" })
+		public Class getColumnClass(int columnIndex) {
+			return columnTypes[columnIndex];
+		}
+
+		boolean[] columnEditables = new boolean[] { false, false, false, false,
+				false, false };
+
+		public boolean isCellEditable(int row, int column) {
+			return columnEditables[column];
+		}
+
+		public void setRegistros(List<RegistroInforme> registroInforme) {
+			clear();
+			for (RegistroInforme registro : registroInforme)
+				add(registro);
+		}
+
+		public List<RegistroInforme> getPresupuestos() {
+			return registros;
+		}
+
+	}
+
+	private static final long serialVersionUID = 1L;
+	private InformeTableModel informeTableModel;
+	
 	private JTable resultadosTable;
 	private JTextField fechaInicioTextField;
 	private JTextField fechaFinTextField;
@@ -36,41 +155,35 @@ public class InformeFrame extends JFrame {
 	private JButton fechaInicioHoyButton;
 	private JButton fechaFinHoyButton;
 	private JComboBox estadoComboBox;
+	private JScrollPane scrollPane;
 
 	@SuppressWarnings("serial")
 	public InformeFrame() {
 		setName("informeFrame");
 		setSize(new Dimension(545, 364));
-		setLocation(400,300);
+		setLocation(400, 300);
 		setPreferredSize(new Dimension(400, 300));
 		setTitle("Informes");
-
+		
+		informeTableModel = new InformeTableModel();
+		
 		JPanel filtrosPanel = new JPanel();
 		getContentPane().add(filtrosPanel, BorderLayout.NORTH);
 		filtrosPanel.setLayout(new FormLayout(new ColumnSpec[] {
-				FormFactory.UNRELATED_GAP_COLSPEC,
-				FormFactory.DEFAULT_COLSPEC,
+				FormFactory.UNRELATED_GAP_COLSPEC, FormFactory.DEFAULT_COLSPEC,
 				FormFactory.LABEL_COMPONENT_GAP_COLSPEC,
 				ColumnSpec.decode("default:grow"),
-				FormFactory.RELATED_GAP_COLSPEC,
-				FormFactory.DEFAULT_COLSPEC,
-				ColumnSpec.decode("15dlu"),
-				FormFactory.DEFAULT_COLSPEC,
+				FormFactory.RELATED_GAP_COLSPEC, FormFactory.DEFAULT_COLSPEC,
+				ColumnSpec.decode("15dlu"), FormFactory.DEFAULT_COLSPEC,
 				FormFactory.RELATED_GAP_COLSPEC,
 				ColumnSpec.decode("default:grow"),
-				FormFactory.RELATED_GAP_COLSPEC,
-				FormFactory.DEFAULT_COLSPEC,
-				FormFactory.UNRELATED_GAP_COLSPEC,},
-			new RowSpec[] {
-				FormFactory.UNRELATED_GAP_ROWSPEC,
-				FormFactory.DEFAULT_ROWSPEC,
-				FormFactory.RELATED_GAP_ROWSPEC,
-				FormFactory.DEFAULT_ROWSPEC,
-				FormFactory.RELATED_GAP_ROWSPEC,
-				FormFactory.DEFAULT_ROWSPEC,
-				FormFactory.RELATED_GAP_ROWSPEC,
-				FormFactory.DEFAULT_ROWSPEC,
-				FormFactory.UNRELATED_GAP_ROWSPEC,}));
+				FormFactory.RELATED_GAP_COLSPEC, FormFactory.DEFAULT_COLSPEC,
+				FormFactory.UNRELATED_GAP_COLSPEC, }, new RowSpec[] {
+				FormFactory.UNRELATED_GAP_ROWSPEC, FormFactory.DEFAULT_ROWSPEC,
+				FormFactory.RELATED_GAP_ROWSPEC, FormFactory.DEFAULT_ROWSPEC,
+				FormFactory.RELATED_GAP_ROWSPEC, FormFactory.DEFAULT_ROWSPEC,
+				FormFactory.RELATED_GAP_ROWSPEC, FormFactory.DEFAULT_ROWSPEC,
+				FormFactory.UNRELATED_GAP_ROWSPEC, }));
 
 		JLabel fechaInicioLabel = new JLabel("Fecha Inicio");
 		filtrosPanel.add(fechaInicioLabel, "2, 2, right, default");
@@ -110,7 +223,7 @@ public class InformeFrame extends JFrame {
 		clienteTextField = new JTextField();
 		filtrosPanel.add(clienteTextField, "4, 4, 3, 1, fill, default");
 		clienteTextField.setColumns(10);
-		
+
 		JLabel estadoLabel = new JLabel("Estado");
 		filtrosPanel.add(estadoLabel, "8, 4, right, default");
 
@@ -119,7 +232,7 @@ public class InformeFrame extends JFrame {
 		for (EstadoOrdenTrabajo estadoOrdenTrabajo : estados) {
 			estadoComboBox.addItem(estadoOrdenTrabajo.getCode().toString());
 		}
-		
+
 		filtrosPanel.add(estadoComboBox, "10, 4, 3, 1, fill, default");
 
 		JLabel vehiculoLabel = new JLabel("Veh\u00EDculo");
@@ -130,40 +243,41 @@ public class InformeFrame extends JFrame {
 		vehiculoTextField.setColumns(10);
 
 		JButton generarInformeButton = new JButton("Generar Informe");
-		filtrosPanel.add(generarInformeButton, "2, 8, 11, 1, center, default");
-
-		JPanel tablaPanel = new JPanel();
-		getContentPane().add(tablaPanel, BorderLayout.CENTER);
-
-		resultadosTable = new JTable();
-		resultadosTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		resultadosTable.setDoubleBuffered(true);
-		resultadosTable.setFillsViewportHeight(true);
-		resultadosTable.setModel(new DefaultTableModel(new Object[][] {
-				{ null, null, null, null, null, null },
-				{ null, null, null, null, null, null },
-				{ null, null, null, null, null, null },
-				{ null, null, null, null, null, null },
-				{ null, null, null, null, null, null },
-				{ null, null, null, null, null, null },
-				{ null, null, null, null, null, null }, }, new String[] {
-				"N\u00FAmero", "Cliente", "Veh\u00EDculo", "Fecha Inicio",
-				"Fecha Fin", "Estado" }) {
-			@SuppressWarnings("rawtypes")
-			Class[] columnTypes = new Class[] { Object.class, Object.class,
-					Object.class, Object.class, Object.class, String.class };
-
-			@SuppressWarnings({ "unchecked", "rawtypes" })
-			public Class getColumnClass(int columnIndex) {
-				return columnTypes[columnIndex];
+		generarInformeButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent evt) {
+				List<RegistroInforme> registros = Sistema.getInstancia()
+						.getInforme(
+								clienteTextField.getText(),
+								vehiculoTextField.getText(),
+								(String)estadoComboBox.getSelectedItem(),
+								fechaInicioTextField.getText(),
+								fechaFinTextField.getText());
+				informeTableModel.setRegistros(registros);
 			}
 		});
+		filtrosPanel.add(generarInformeButton, "2, 8, 11, 1, center, default");
+		
+		JPanel tablaPanel = new JPanel();
+		getContentPane().add(tablaPanel, BorderLayout.CENTER);
+		
+		informeTableModel = new InformeTableModel();
+		tablaPanel.setLayout(new BorderLayout(0, 0));
+
+		scrollPane = new JScrollPane();
+		tablaPanel.add(scrollPane);
+		scrollPane.setViewportView(resultadosTable);
+		
+		resultadosTable = new JTable();
+		resultadosTable.setFillsViewportHeight(true);
+		scrollPane.setViewportView(resultadosTable);
+		resultadosTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		resultadosTable.setDoubleBuffered(true);
+		resultadosTable.setModel(informeTableModel);
 		resultadosTable.getColumnModel().getColumn(0).setResizable(false);
+		resultadosTable.getColumnModel().getColumn(1).setResizable(false);
 		resultadosTable.getColumnModel().getColumn(2).setResizable(false);
 		resultadosTable.getColumnModel().getColumn(3).setResizable(false);
-		resultadosTable.getColumnModel().getColumn(3).setMinWidth(75);
-		resultadosTable.getColumnModel().getColumn(3).setMaxWidth(75);
-		tablaPanel.setLayout(new BorderLayout(0, 0));
-		tablaPanel.add(resultadosTable);
+		resultadosTable.getColumnModel().getColumn(4).setResizable(false);
+		resultadosTable.getColumnModel().getColumn(5).setResizable(false);
 	}
 }
