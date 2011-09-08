@@ -5,6 +5,7 @@ import java.util.List;
 
 import modelo.Tarea;
 
+import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -134,6 +135,42 @@ public class TareaDAO {
 			
 			tx = session.beginTransaction();
 			tareas = session.createCriteria(Tarea.class).list();
+			for (Tarea tarea : tareas) {
+				tarea.getOrdenTrabajo().getNumero();
+			}
+			tx.commit();
+			
+		} catch (RuntimeException e) {
+			if (tx != null && tx.isActive()) {
+				try {
+					// Second try catch as the rollback could fail as well
+					tx.rollback();
+				} catch (HibernateException e1) {
+					logger.debug("Error rolling back transaction");
+				}
+				throw new RuntimeException("Error: Imposible seleccionar las tareas.\n" +
+						"detalles del error[ "+e.getMessage()+"]");
+			}
+		}	
+		return tareas;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<Tarea> selectByOt(int numeroOt) throws RuntimeException {
+
+		Transaction tx = null;
+		Session session = SessionFactoryUtil.getInstance().getCurrentSession();
+		List<Tarea> tareas = new ArrayList<Tarea>();
+		try {
+			
+			tx = session.beginTransaction();
+			
+			Criteria baseCriteria =  session.createCriteria(Tarea.class);
+			Criteria otCriteria = baseCriteria.createCriteria("ordenTrabajo");
+			otCriteria.add(Restrictions.eq("numero", numeroOt));
+			
+			tareas = baseCriteria.list();
+			
 			tx.commit();
 			
 		} catch (RuntimeException e) {

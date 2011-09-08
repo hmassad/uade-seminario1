@@ -206,10 +206,33 @@ public class Sistema {
 					+ "/" + Integer.toString(calendar.get(Calendar.MONTH))
 					+ "/" + Integer.toString(calendar.get(Calendar.YEAR));
 			tarea.setFechaFin(fechaDefin);
+		
+		}else{
+			tarea.setFechaFin(null);
 		}
-
+		
 		tarea.setEstado(estadoTarea);
 		TareaDAO.getInstancia().update(tarea);
+		
+		//Ahora controlo que si todas las tareas de la OT estan terminadas
+		// entonces la ot tambien.
+		int numeroOT = tarea.getOrdenTrabajo().getNumero();
+		List<Tarea> tareas = TareaDAO.getInstancia().selectByOt(numeroOT); 
+		
+		boolean todasTerminadas = true;
+		for (Tarea t : tareas) {
+			if(t.getEstado().name().equals("ASIGNADA")){
+				todasTerminadas = false;
+			}
+		}
+		
+		if(todasTerminadas){
+			tarea.getOrdenTrabajo().setEstado(EstadoOrdenTrabajo.ENTREGADO);
+			OrdenTrabajoDAO.getInstancia().update(tarea.getOrdenTrabajo());
+		} else { 
+			tarea.getOrdenTrabajo().setEstado(EstadoOrdenTrabajo.PREPARADO);
+			OrdenTrabajoDAO.getInstancia().update(tarea.getOrdenTrabajo());
+		}
 	}
 	
 	/*-------------------------------------------------------------------------*/
