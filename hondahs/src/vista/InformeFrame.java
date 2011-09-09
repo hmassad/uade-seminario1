@@ -23,7 +23,7 @@ import javax.swing.event.TableModelListener;
 import javax.swing.table.AbstractTableModel;
 
 import modelo.EstadoOrdenTrabajo;
-import vista.tablesModel.RegistroInforme;
+import modelo.OrdenTrabajo;
 
 import com.jgoodies.forms.factories.FormFactory;
 import com.jgoodies.forms.layout.ColumnSpec;
@@ -38,7 +38,7 @@ public class InformeFrame extends JFrame {
 
 		private static final long serialVersionUID = 1L;
 
-		private List<RegistroInforme> registros = new Vector<RegistroInforme>();
+		private List<OrdenTrabajo> registros = new Vector<OrdenTrabajo>();
 
 		public void clear() {
 			int rows = registros.size();
@@ -51,7 +51,7 @@ public class InformeFrame extends JFrame {
 				}
 		}
 
-		public void add(RegistroInforme registroInforme) {
+		public void add(OrdenTrabajo registroInforme) {
 			registros.add(registroInforme);
 			TableModelEvent event = new TableModelEvent(this,
 					registros.size() - 1, registros.size() - 1,
@@ -62,7 +62,7 @@ public class InformeFrame extends JFrame {
 				}
 		}
 
-		public void remove(RegistroInforme registroInforme) {
+		public void remove(OrdenTrabajo registroInforme) {
 			int index = registros.indexOf(registroInforme);
 			registros.remove(registroInforme);
 
@@ -74,7 +74,7 @@ public class InformeFrame extends JFrame {
 				}
 		}
 
-		public RegistroInforme getRegistroInformeAt(int rowIndex) {
+		public OrdenTrabajo getRegistroInformeAt(int rowIndex) {
 			return registros.get(rowIndex);
 		}
 
@@ -98,20 +98,20 @@ public class InformeFrame extends JFrame {
 
 		@Override
 		public Object getValueAt(int rowIndex, int columnIndex) {
-			RegistroInforme registroInforme = registros.get(rowIndex);
+			OrdenTrabajo registroInforme = registros.get(rowIndex);
 			switch (columnIndex) {
 			case 0:
-				return registroInforme.getNumeroOT();
+				return registroInforme.getNumero();
 			case 1:
-				return registroInforme.getCliente();
+				return registroInforme.getPresupuesto().getCliente().getNombre();
 			case 2:
-				return registroInforme.getPatente();
+				return registroInforme.getPresupuesto().getVehiculo().getPatente();
 			case 3:
 				return registroInforme.getFechaInicio();
 			case 4:
 				return registroInforme.getFechaFin();
 			case 5:
-				return registroInforme.getEstado();
+				return registroInforme.getEstado().getCode();
 			}
 			throw new RuntimeException("La columna no existe.");
 		}
@@ -132,13 +132,13 @@ public class InformeFrame extends JFrame {
 			return columnEditables[column];
 		}
 
-		public void setRegistros(List<RegistroInforme> registroInforme) {
+		public void setRegistros(List<OrdenTrabajo> registroInforme) {
 			clear();
-			for (RegistroInforme registro : registroInforme)
+			for (OrdenTrabajo registro : registroInforme)
 				add(registro);
 		}
 
-		public List<RegistroInforme> getPresupuestos() {
+		public List<OrdenTrabajo> getPresupuestos() {
 			return registros;
 		}
 
@@ -157,7 +157,6 @@ public class InformeFrame extends JFrame {
 	private JComboBox estadoComboBox;
 	private JScrollPane scrollPane;
 
-	@SuppressWarnings("serial")
 	public InformeFrame() {
 		setName("informeFrame");
 		setSize(new Dimension(545, 364));
@@ -229,6 +228,7 @@ public class InformeFrame extends JFrame {
 
 		estadoComboBox = new JComboBox();
 		EstadoOrdenTrabajo[] estados = EstadoOrdenTrabajo.values();
+		estadoComboBox.addItem("Todos los estados");
 		for (EstadoOrdenTrabajo estadoOrdenTrabajo : estados) {
 			estadoComboBox.addItem(estadoOrdenTrabajo.getCode().toString());
 		}
@@ -245,7 +245,7 @@ public class InformeFrame extends JFrame {
 		JButton generarInformeButton = new JButton("Generar Informe");
 		generarInformeButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
-				List<RegistroInforme> registros = Sistema.getInstancia()
+				List<OrdenTrabajo> registros = Sistema.getInstancia()
 						.getInforme(
 								clienteTextField.getText(),
 								vehiculoTextField.getText(),
