@@ -3,8 +3,6 @@ package persistencia;
 import java.util.ArrayList;
 import java.util.List;
 
-import modelo.Informe;
-
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -25,6 +23,7 @@ public class RegistroInformeDAO {
 		return instancia;
 	}
 
+	@SuppressWarnings("unchecked")
 	public List<RegistroInforme> selectAll(String cliente, String vehiculo,
 			String estado, String fechaInicio, String fechaFin) throws RuntimeException {
 

@@ -1,111 +1,94 @@
-CREATE SCHEMA `hondahs` ;
+CREATE DATABASE `hondahs`;
+USE `hondahs`;
 
-CREATE TABLE hondahs.cliente (
+CREATE TABLE `cliente` (
   `numero` int(11) NOT NULL AUTO_INCREMENT,
-  `nombre` varchar(45) NOT NULL,
-  `email` varchar(45) NOT NULL,
-  `telefono` int(11) NOT NULL,
   `celular` int(11) NOT NULL,
-  `direccion` varchar(45) NOT NULL,
+  `direccion` varchar(255) NOT NULL,
+  `email` varchar(255) NOT NULL,
+  `nombre` varchar(255) NOT NULL,
+  `telefono` int(11) NOT NULL,
   PRIMARY KEY (`numero`)
 );
 
-CREATE TABLE hondahs.informe (
+CREATE TABLE `informe` (
   `numero` int(11) NOT NULL AUTO_INCREMENT,
-  `informe` varchar(45) NOT NULL,
+  `tipoInforme` varchar(255) NOT NULL,
   PRIMARY KEY (`numero`)
 );
 
-CREATE TABLE hondahs.tipoTarea (
+CREATE TABLE `pedidomateriales` (
   `numero` int(11) NOT NULL AUTO_INCREMENT,
-  `descripcion` varchar(45) NOT NULL,
+  `estado` int(11) DEFAULT NULL,
   PRIMARY KEY (`numero`)
 );
 
-CREATE TABLE hondahs.usuario (
-  `numero` int(11) NOT NULL AUTO_INCREMENT,
-  `nombre` varchar(45) NOT NULL,
-  `legajo` int(11) NOT NULL,
-  `tipoUsuario` varchar(45) NOT NULL,
-  `clave` varchar(45) NOT NULL,
-  PRIMARY KEY (`numero`),
-  KEY `tipo_usuario` (`tipoUsuario`)
-);
-
-CREATE TABLE hondahs.tarea (
-  `numero` int(11) NOT NULL AUTO_INCREMENT,
-  `tipoTarea` int(11) NOT NULL,
-  `estado` varchar(45) NOT NULL,
-  `fechaFin` varchar(45),
-  `usuario` int(11) NOT NULL,
-  `ordentrabajo` int(11) NOT NULL,
-  PRIMARY KEY (`numero`),
-  KEY `tipoTareaFK` (`tipoTarea`),
-  KEY `estadoTareaFK` (`estado`),
-  KEY `usuarioTareaFK` (`usuario`),
-  CONSTRAINT `tipoTareaFK` FOREIGN KEY (`tipoTarea`) 
-  REFERENCES `tipotarea` (`numero`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `usuarioTareaFK` FOREIGN KEY (`usuario`) 
-  REFERENCES `usuario` (`numero`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `ordenTrabajoTareaFK` FOREIGN KEY (`ordentrabajo` )
-  REFERENCES `ordentrabajo` (`numero` ) ON DELETE NO ACTION ON UPDATE NO ACTION
-);
-
-CREATE TABLE hondahs.pedidomateriales (
-  `numero` int(11) NOT NULL AUTO_INCREMENT,
-  `idTarea` int(11) NOT NULL,
-  `estado` varchar(45) NOT NULL,
-  PRIMARY KEY (`numero`),
-  KEY `pedidoMaterialesTarea` (`idTarea`),
-  CONSTRAINT `pedidoMaterialesTarea` FOREIGN KEY (`idTarea`) 
-  REFERENCES `tarea` (`numero`) ON DELETE NO ACTION ON UPDATE NO ACTION
-);
-
-CREATE TABLE hondahs.itempedidomateriales (
+CREATE TABLE `itempedidomateriales` (
   `numero` int(11) NOT NULL AUTO_INCREMENT,
   `cantidad` int(11) NOT NULL,
-  `descripcion` varchar(45) NOT NULL,
-  `idPedidoMateriales` int(11) NOT NULL,
+  `descripcion` varchar(255) NOT NULL,
+  `idPedidoMateriales` int(11) DEFAULT NULL,
   PRIMARY KEY (`numero`),
-  KEY `itemPedidoMaterialesFK` (`idPedidoMateriales`),
-  CONSTRAINT `itemPedidoMaterialesFK` FOREIGN KEY (`idPedidoMateriales`) 
-  REFERENCES `pedidomateriales` (`numero`) ON DELETE NO ACTION ON UPDATE NO ACTION
+  CONSTRAINT `numero` FOREIGN KEY (`numero`) REFERENCES `pedidomateriales` (`numero`),
+  CONSTRAINT `idPedidoMateriales` FOREIGN KEY (`idPedidoMateriales`) REFERENCES `pedidomateriales` (`numero`)
 );
 
-CREATE TABLE hondahs.vehiculo (
+CREATE TABLE `vehiculo` (
   `numero` int(11) NOT NULL AUTO_INCREMENT,
-  `patente` varchar(45) NOT NULL,
-  `modelo` varchar(45) NOT NULL,
-  `chasis` varchar(45) NOT NULL,
+  `chasis` varchar(255) NOT NULL,
+  `combustible` varchar(255) NOT NULL,
   `kilometraje` int(11) NOT NULL,
-  `combustible` varchar(45) NOT NULL,
+  `modelo` varchar(255) NOT NULL,
+  `patente` varchar(255) NOT NULL,
   PRIMARY KEY (`numero`)
 );
 
-CREATE TABLE hondahs.presupuesto (
+CREATE TABLE `presupuesto` (
   `numero` int(11) NOT NULL AUTO_INCREMENT,
-  `fecha` varchar(45) NOT NULL,
-  `idCliente` int(11) NOT NULL,
+  `fecha` varchar(255) NOT NULL,
+  `idCliente` int(11) DEFAULT NULL,
   `idVehiculo` int(11) NOT NULL,
   PRIMARY KEY (`numero`),
-  KEY `presupuestoClienteFK` (`idCliente`),
-  KEY `presupuestoVehiculoFK` (`idVehiculo`),
-  CONSTRAINT `presupuestoClienteFK` FOREIGN KEY (`idCliente`) 
-  REFERENCES `cliente` (`numero`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `presupuestoVehiculoFK` FOREIGN KEY (`idVehiculo`) 
-  REFERENCES `vehiculo` (`numero`) ON DELETE NO ACTION ON UPDATE NO ACTION
+  CONSTRAINT `idCliente` FOREIGN KEY (`idCliente`) REFERENCES `cliente` (`numero`),
+  CONSTRAINT `idVehiculo` FOREIGN KEY (`idVehiculo`) REFERENCES `vehiculo` (`numero`)
 );
 
-CREATE TABLE hondahs.ordentrabajo (
+CREATE TABLE `ordentrabajo` (
   `numero` int(11) NOT NULL AUTO_INCREMENT,
-  `idPresupuesto` int(11) NOT NULL,
-  `fechaInicio` varchar(45) NOT NULL,
-  `fechaFin` varchar(45),
-  `estado` varchar(45) NOT NULL,
+  `estado` varchar(255) DEFAULT NULL,
+  `fechaFin` varchar(255) DEFAULT NULL,
+  `fechaInicio` varchar(255) NOT NULL,
+  `idPresupuesto` int(11) DEFAULT NULL,
   PRIMARY KEY (`numero`),
-  KEY `ordenTrabajoPresupuestoFK` (`idPresupuesto`),
-  CONSTRAINT `ordenTrabajoPresupuestoFK` FOREIGN KEY (`idPresupuesto`) 
-  REFERENCES `presupuesto` (`numero`) ON DELETE NO ACTION ON UPDATE NO ACTION
+  CONSTRAINT `idPresupuesto` FOREIGN KEY (`idPresupuesto`) REFERENCES `presupuesto` (`numero`)
 );
 
+CREATE TABLE `tipotarea` (
+  `numero` int(11) NOT NULL AUTO_INCREMENT,
+  `descripcion` varchar(255) NOT NULL,
+  PRIMARY KEY (`numero`)
+);
 
+CREATE TABLE `usuario` (
+  `numero` int(11) NOT NULL AUTO_INCREMENT,
+  `clave` varchar(255) NOT NULL,
+  `legajo` int(11) NOT NULL,
+  `nombre` varchar(255) NOT NULL,
+  `tipoUsuario` varchar(255) NOT NULL,
+  `usuario` varchar(45) NOT NULL,
+  PRIMARY KEY (`numero`)
+);
+
+CREATE TABLE `tarea` (
+  `numero` int(11) NOT NULL AUTO_INCREMENT,
+  `estado` varchar(255) DEFAULT NULL,
+  `fechaFin` varchar(255) DEFAULT NULL,
+  `fechaInicio` varchar(255) NOT NULL,
+  `ordentrabajo` int(11) NOT NULL,
+  `tipoTarea` int(11) DEFAULT NULL,
+  `usuario` int(11) DEFAULT NULL,
+  PRIMARY KEY (`numero`),
+  CONSTRAINT `ordentrabajo` FOREIGN KEY (`ordentrabajo`) REFERENCES `ordentrabajo` (`numero`),
+  CONSTRAINT `usuario` FOREIGN KEY (`usuario`) REFERENCES `usuario` (`numero`),
+  CONSTRAINT `tipoTarea` FOREIGN KEY (`tipoTarea`) REFERENCES `tipotarea` (`numero`)
+);
