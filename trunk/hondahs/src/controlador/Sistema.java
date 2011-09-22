@@ -74,6 +74,7 @@ public class Sistema {
 	/*-------------------------------------------------------------------------*/
 	/*---------------------  GENERAR ORDEN DE TRABAJO -------------------------*/
 	/*-------------------------------------------------------------------------*/
+
 	public List<Presupuesto> getPresupuestos(String fechaInicio, String fechaFin) {
 
 		List<Presupuesto> presupuestos = new ArrayList<Presupuesto>();
@@ -253,6 +254,7 @@ public class Sistema {
 	/*-------------------------------------------------------------------------*/
 	/*----- METODOS GENERALES PARA TODAS LAS FUNCIONALIDADES ------------------*/
 	/*-------------------------------------------------------------------------*/
+
 	private boolean perteneceAlRangoDeFechas(String fechaInicio,
 			String fechaFin, String fechaInicioAComparar) {
 
@@ -305,76 +307,82 @@ public class Sistema {
 
 		boolean retorno = false;
 		SimpleDateFormat formatoDelTexto = new SimpleDateFormat("dd/MM/yyyy");
-		
+
 		if ((fechaInicio == null && fechaFin == null)
-				|| (fechaInicio.isEmpty() && fechaFin.isEmpty())){
+				|| (fechaInicio.isEmpty() && fechaFin.isEmpty())) {
 			return true;
 		}
-		
+
 		try {
 			if (fechaInicio != null && fechaFin != null
 					&& !fechaInicio.isEmpty() && !fechaFin.isEmpty()) {
 
-					Date fechaMenor = formatoDelTexto.parse(fechaInicio);
-					Date fechaMayor = formatoDelTexto.parse(fechaFin);
-	
-					if (ordenTrabajo.getFechaInicio() != null && ordenTrabajo.getFechaFin() != null
-							&& !ordenTrabajo.getFechaInicio().isEmpty() && !ordenTrabajo.getFechaFin().isEmpty()) {
-	
-						Date fechaInicioOT = formatoDelTexto.parse(ordenTrabajo
-								.getFechaInicio());
-						Date fechaFinOT = formatoDelTexto.parse(ordenTrabajo
-								.getFechaFin());
-	
-						if (fechaInicioOT.compareTo(fechaMenor) >= 0
-								&& fechaFinOT.compareTo(fechaMayor) <= 0) {
-							retorno = true;
-						}
-	
-					} else if (ordenTrabajo.getFechaInicio() != null && !ordenTrabajo.getFechaInicio().isEmpty()) {
-	
-						Date fechaInicioOT = formatoDelTexto.parse(ordenTrabajo
-								.getFechaInicio());
-						if (fechaInicioOT.compareTo(fechaMenor) >= 0) {
-							retorno = true;
-						}
-	
-					} else if (ordenTrabajo.getFechaFin() != null && !ordenTrabajo.getFechaFin().isEmpty()) {
-	
-						Date fechaFinOT = formatoDelTexto.parse(ordenTrabajo
-								.getFechaFin());
-						if (fechaFinOT.compareTo(fechaMayor) <= 0) {
-							retorno = true;
-						}
-	
+				Date fechaMenor = formatoDelTexto.parse(fechaInicio);
+				Date fechaMayor = formatoDelTexto.parse(fechaFin);
+
+				if (ordenTrabajo.getFechaInicio() != null
+						&& ordenTrabajo.getFechaFin() != null
+						&& !ordenTrabajo.getFechaInicio().isEmpty()
+						&& !ordenTrabajo.getFechaFin().isEmpty()) {
+
+					Date fechaInicioOT = formatoDelTexto.parse(ordenTrabajo
+							.getFechaInicio());
+					Date fechaFinOT = formatoDelTexto.parse(ordenTrabajo
+							.getFechaFin());
+
+					if (fechaInicioOT.compareTo(fechaMenor) >= 0
+							&& fechaFinOT.compareTo(fechaMayor) <= 0) {
+						retorno = true;
 					}
+
+				} else if (ordenTrabajo.getFechaInicio() != null
+						&& !ordenTrabajo.getFechaInicio().isEmpty()) {
+
+					Date fechaInicioOT = formatoDelTexto.parse(ordenTrabajo
+							.getFechaInicio());
+					if (fechaInicioOT.compareTo(fechaMenor) >= 0) {
+						retorno = true;
+					}
+
+				} else if (ordenTrabajo.getFechaFin() != null
+						&& !ordenTrabajo.getFechaFin().isEmpty()) {
+
+					Date fechaFinOT = formatoDelTexto.parse(ordenTrabajo
+							.getFechaFin());
+					if (fechaFinOT.compareTo(fechaMayor) <= 0) {
+						retorno = true;
+					}
+
+				}
 
 			} else if (fechaInicio != null && !fechaInicio.isEmpty()
 					&& (fechaFin == null || fechaFin.isEmpty())) {
 
-					Date fechaMenor = formatoDelTexto.parse(fechaInicio);
-					if (ordenTrabajo.getFechaInicio() != null && !ordenTrabajo.getFechaInicio().isEmpty()) {
-	
-						Date fechaInicioOT = formatoDelTexto.parse(ordenTrabajo
-								.getFechaInicio());
-						if (fechaInicioOT.compareTo(fechaMenor) >= 0) {
-							retorno = true;
-						}
+				Date fechaMenor = formatoDelTexto.parse(fechaInicio);
+				if (ordenTrabajo.getFechaInicio() != null
+						&& !ordenTrabajo.getFechaInicio().isEmpty()) {
+
+					Date fechaInicioOT = formatoDelTexto.parse(ordenTrabajo
+							.getFechaInicio());
+					if (fechaInicioOT.compareTo(fechaMenor) >= 0) {
+						retorno = true;
 					}
+				}
 			}
 
 			if (fechaFin != null && !fechaFin.isEmpty()
 					&& (fechaInicio == null || fechaInicio.isEmpty())) {
 
-					Date fechaMayor = formatoDelTexto.parse(fechaFin);
-					if (ordenTrabajo.getFechaFin() != null && !ordenTrabajo.getFechaFin().isEmpty()) {
-	
-						Date fechaFinOT = formatoDelTexto.parse(ordenTrabajo
-								.getFechaFin());
-						if (fechaFinOT.compareTo(fechaMayor) <= 0) {
-							retorno = true;
-						}
+				Date fechaMayor = formatoDelTexto.parse(fechaFin);
+				if (ordenTrabajo.getFechaFin() != null
+						&& !ordenTrabajo.getFechaFin().isEmpty()) {
+
+					Date fechaFinOT = formatoDelTexto.parse(ordenTrabajo
+							.getFechaFin());
+					if (fechaFinOT.compareTo(fechaMayor) <= 0) {
+						retorno = true;
 					}
+				}
 			}
 		} catch (Exception e) {
 			return false;
