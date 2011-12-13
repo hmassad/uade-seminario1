@@ -81,7 +81,7 @@ public class Sistema {
 		for (Presupuesto presupuesto : PresupuestoDAO.getInstancia()
 				.selectAll()) {
 			if (perteneceAlRangoDeFechas(fechaInicio, fechaFin,
-					presupuesto.getFecha())) {
+					presupuesto.getFecha(), null)) {
 				presupuestos.add(presupuesto);
 			}
 		}
@@ -119,7 +119,7 @@ public class Sistema {
 		for (OrdenTrabajo ordenTrabajo : OrdenTrabajoDAO.getInstancia()
 				.selectAll()) {
 			if (perteneceAlRangoDeFechas(fechaInicio, fechaFin,
-					ordenTrabajo.getFechaInicio())) {
+					ordenTrabajo.getFechaInicio(), ordenTrabajo.getFechaFin())) {
 				ordenesTrabajo.add(ordenTrabajo);
 			}
 		}
@@ -192,7 +192,7 @@ public class Sistema {
 			// Traigo todas las tareas cargadas en la base de datos
 			for (Tarea tarea : TareaDAO.getInstancia().selectAll()) {
 				if (perteneceAlRangoDeFechas(fechaInicio, fechaFin,
-						tarea.getFechaInicio())) {
+						tarea.getFechaInicio(), tarea.getFechaFin())) {
 					tareas.add(tarea);
 				}
 			}
@@ -203,7 +203,7 @@ public class Sistema {
 				if (tarea.getUsuario().getLegajo()
 						.equals(this.usuarioLogeado.getLegajo())
 						&& perteneceAlRangoDeFechas(fechaInicio, fechaFin,
-								tarea.getFechaInicio()))
+								tarea.getFechaInicio(), tarea.getFechaFin()))
 					tareas.add(tarea);
 			}
 		}
@@ -256,7 +256,8 @@ public class Sistema {
 	/*-------------------------------------------------------------------------*/
 
 	private boolean perteneceAlRangoDeFechas(String fechaInicio,
-			String fechaFin, String fechaInicioAComparar) {
+			String fechaFin, String fechaInicioAComparar,
+			String fechaFinAComparar) {
 
 		if ((fechaInicio == null && fechaFin == null)
 				|| (fechaInicio.equals("") && fechaFin.equals(""))) {
@@ -267,10 +268,16 @@ public class Sistema {
 		SimpleDateFormat formatoDelTexto = new SimpleDateFormat("dd/MM/yyyy");
 		Date fechaMenor = null;
 		Date fechaMayor = null;
-		Date fechaInicioOT = null;
+		Date fechaInicioEntidad = null;
+		Date fechaFinEntidad = null;
 
 		try {
-			fechaInicioOT = formatoDelTexto.parse(fechaInicioAComparar);
+			fechaInicioEntidad = formatoDelTexto.parse(fechaInicioAComparar);
+		} catch (ParseException ex) {
+		}
+		try {
+			if (fechaFinAComparar != null && !fechaFinAComparar.equals(""))
+				fechaFinEntidad = formatoDelTexto.parse(fechaFinAComparar);
 		} catch (ParseException ex) {
 		}
 		try {
@@ -282,24 +289,27 @@ public class Sistema {
 		} catch (ParseException ex) {
 		}
 
-		if ((fechaMenor != null && fechaMayor != null)
-				&& (!fechaMenor.equals("") && !fechaMayor.equals(""))) {
-			if (fechaMenor.compareTo(fechaInicioOT) <= 0
-					&& fechaMayor.compareTo(fechaInicioOT) >= 0) {
-				return true;
-			}
-		} else if (fechaMenor != null && !fechaMenor.equals("")) {
-			if (fechaMenor.compareTo(fechaInicioOT) <= 0) {
-				return true;
-			}
-		} else if (fechaMayor != null && !fechaMayor.equals("")) {
-			if (fechaMayor.compareTo(fechaInicioOT) >= 0) {
-				return true;
-			}
-		} else {
-			return false;
+		// Si las dos fechas son nulas retorno true
+		if (fechaMenor == null && fechaMayor == null) {
+			return true;
 		}
-		return false;
+
+		boolean retorno = false;
+
+		// Controlo el rango con la fecha menor
+		if (fechaMenor != null && !fechaMenor.equals("")
+				&& fechaMenor.compareTo(fechaInicioEntidad) <= 0) {
+			retorno = true;
+		}
+
+		// Controlo el rango con la fecha mayor
+		if (fechaFinEntidad != null && fechaMayor != null && !fechaMayor.equals("")) {
+			if (fechaMayor.compareTo(fechaFinEntidad) > 0) {
+				retorno = false;
+			}
+		}
+
+		return retorno;
 	}
 
 	private boolean otEnRangoDeFechas(String fechaInicio, String fechaFin,
