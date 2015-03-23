@@ -1,0 +1,1 @@
+Descripción de proyecto de seminario 1
